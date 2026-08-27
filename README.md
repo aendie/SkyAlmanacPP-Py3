@@ -1,6 +1,6 @@
 # SkyalmanacPP-Py3
 
-SkyalmanacPP-Py3 is a Python 3 program to create the Planetary Phenomena data and charts that accompanies a Nautical Almanac. SkyalmanacPP-Py3 is a complimenary program to Skyalmanac-Py3 (also one of my repositories).
+SkyalmanacPP-Py3 is a Python 3 program to create the Planetary Phenomena data and charts that accompanies a Nautical Almanac. SkyalmanacPP-Py3 is a complimenary program to [Skyalmanac-Py3](https://github.com/aendie/SkyAlmanac-Py3).
 
 **Brief History**
 
@@ -10,7 +10,7 @@ SkyalmanacPP-Py3 began development in January 2023 and has since undergone many 
 
 SkyalmanacPP (AKA "Planetary Phenomena") includes:
 
-* the **"DECLINATION OF SUN AND PLANETS"** charts
+* the **"DECLINATION OF SUN AND PLANETS"** chart
 
 * the **"Planet Diagram"** (see "Americal Practical Navigator" originally by Nathaniel Bowditch, L.L.D., Volume 1, 2017 Edition, page 256; also any "Astronomical Phenomena" or "Nautical Almanac" from USNO/HMNAO)
 
