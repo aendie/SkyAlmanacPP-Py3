@@ -4,7 +4,7 @@ SkyalmanacPP-Py3 is a Python 3 program to create the Planetary Phenomena data an
 
 **Brief History**
 
-SkyalmanacPP-Py3 began development in January 2023 and has since undergone many updates. I publish only well tested code... the Planetary Visibility Charts, although the charts were correct, required a complete re-write in 2026 that now includes an intermediate language to describe paths that form a perimeter to be shaded, thus providing a level of abstraction from the detailed path descriptions in the "Ti_k_Z" language.
+SkyalmanacPP-Py3 began development in January 2023 and has since undergone many updates. I publish only well tested code... the Planetary Visibility Charts, although the charts were correct, required a complete re-write in 2026 that now includes an intermediate language to describe paths that form a perimeter to be shaded, thus providing a level of abstraction from the detailed path descriptions in the "TikZ" language.
 
 **Functionality**
 
