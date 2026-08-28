@@ -188,7 +188,7 @@ if __name__ == '__main__':      # execute if this module explicitely run
         # print("Issue: https://github.com/skyfielders/python-skyfield/issues/1086")
         # sys.exit(0)
 
-    devuser = True      # enable added functionality for developers
+    devuser = False     # enable added functionality for developers
     obj = None
     allplanets = False
     latndx = 0; rtndx = 0; nmndx = 0
