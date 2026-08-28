@@ -20,6 +20,12 @@ SkyalmanacPP (AKA "Planetary Phenomena") includes:
 
 * **Planet Visibility charts**, which I prefer to call "Planet Invisibility" charts, because they show whwn the planet is below the horizon (shaded grey) and when the Sun is higher than 6 degrees below the horizon (shaded gold), i.e. Civil Dawn to Civil Dusk, when it is *generally* too bright to see any planets. (Conversely I maintain that a planet is generally visible during Nautical and Astronomical twilight and night itself, when the Sun is more than 18 degrees below the horizon.) This chart provides the best latitude-specific picture of your chances to observe a given planet. It is based on the pioneering planet visibility work done by the astronomer Rainer Lange, whose web site is now only reachable as an archive: https://web.archive.org/web/20260106175348/https://www.alcyone.de/
 
+<picture>
+ <source media="(prefers-color-scheme: dark)" srcset="https://github.com/aendie/SkyAlmanacPP-Py3/blob/main/Mars2026_66N.png">
+ <source media="(prefers-color-scheme: light)" srcset="https://github.com/aendie/SkyAlmanacPP-Py3/blob/main/Mars2026_66N.png">
+ <img alt="Mars in 2026 at latitude 66°N" src="https://github.com/aendie/SkyAlmanacPP-Py3/blob/main/Mars2026_66N.png">
+</picture>
+
 Note to developers: the Planet Visibility charts have passed 7140 test cases (5 planets x 28 selected latitudes between 60°S and 72°N x years 2000 to 2050 inclusive). Regression testing is built-in in that the newly generated TeX files can be compared to TeX master files without the need to convert them to PDF file format, displaying only the differences. This is a time-saving feature.
 
 **User Documentation**
