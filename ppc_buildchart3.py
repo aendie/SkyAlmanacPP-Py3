@@ -804,6 +804,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
     # create objrise_XY_txt, plotrise_XY_txt, rise_offset, riseseg_Ymax, riseseg_Ymin
     # ... from objrise_Y
     # ----------------------------------------------------------------------------------------------
+
     global riseseg_Y, setseg_Y      # for get_Y()
     objrise_XY_txt = []     # RISE orthogonal coordinates
     objset_XY_txt = []      #  SET orthogonal coordinates
@@ -1732,11 +1733,6 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         # ----------------------------------------- end of 'for'
 
     # print("   RISEseg_to_multiSET_segs", RISEseg_to_multiSET_segs, "multiRISE_to_SETseg_segs", multiRISE_to_SETseg_segs)
-
-
-
-
-
 
 
 # Identify sections during noDAWN when 'sun above horizon' (shaded gold) is adjacent to the 00h border
@@ -2951,14 +2947,6 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             msgR = "   rise_seg_done {}".format(rise_seg_done)
             msg  = msgR + " "*(40-len(msgR)) + " set_seg_done {}".format(set_seg_done)
             print(msg)
-
-
-
-
-
-
-
-
 
 
 # .............. add   T E X T  /  A N N O T A T I O N ..............

@@ -90,8 +90,8 @@ def isConnected():
         pass
     return False    # if neither is reachable
 
-# NOTE: the IERS server is unavailable (due to maintenance work in the first 3 weeks, at least, of April 2022)
-#       however, although the USNO server currently works, it was previously down for 2.5 years!
+# NOTE: the IERS server was unavailable due to maintenance work in the first 3 weeks of April 2022
+#       and although the USNO server currently works, it was previously down for 2.5 years!
 #       So it is still best to try using the IERS server as first oprion, and USNO as second.
 
 def testIERSserver(filename):

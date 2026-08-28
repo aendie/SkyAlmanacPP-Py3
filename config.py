@@ -51,10 +51,12 @@ PV_nsdah = False    # PV chart: 'True' to disable gold 'all day above horizon' s
 PV_nsdbh = False    # PV chart: 'True' to disable gray 'all day below horizon' shading
 PV_df  = False      # 'True' to log 'above horizon' shading for 'scan the RISE segment forwards'
 PV_db  = False      # 'True' to log 'above horizon' shading for 'scan matching SET segment backwards'
-orthogonal = False  # 'True' to print all data for a day vertically at start of day...
-    #   (technically incorrect above 00h but practical for debugging/regression testing)
-    # ... thus Civil Dawn&Dusk + planet RISE&SET + Meridian Passage data is slanting right by 0.238731033 degrees.
-    #   ( 1 hour vertically and 10 calendar days horizontally have the same length )
+orthogonal = False  # 'True' to print all data for a day vertically at start of day which
+   #    is technically incorrect but practical for debugging/regression testing.
+   # 'False' prints Civil Dawn&Dusk + planet RISE&SET + Meridian Passage data
+   #    accurately - slanting right upwards by 0.238731033 degrees,
+   #    so that 24h on day 'x' is directly above 00h on day 'x+1'
+   #    ( 1 hour vertically and 10 calendar days horizontally have the same length on the chart )
 
 ephemeris = [['de421.bsp',1900,2050],['de405.bsp',1600,2200],['de406.bsp',1000,2750],['de430t.bsp',1550,2650],['de440.bsp',1550,2650]]
 objnames = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']
@@ -64,7 +66,7 @@ debug_labels = False        # 'True' to print 'label_overlaid_check' data
 debug_section_length = False    # 'True' to print path section lengths in Declination Chart
 debug_chosen = False        # 'True' to print chosen labels in Declination Chart
 debug_crossing = False      # 'True' to print all MerPass path crossing points
-debug_scipy = False         # 'True' to print planet Conjunctions and Oppositions (for Planet Diagram page 2)
+debug_scipy = False         # 'True' to print all planet Conjunctions chronologically
 debug_magnitude = False     # 'True' to print planet magnitudes
 debug_visibility = False    # 'True' to print planet visibility over the year
 debug_Rsegments = False     # 'True' to print rise segment coordinates

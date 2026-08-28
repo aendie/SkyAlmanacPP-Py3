@@ -478,7 +478,7 @@ def makePPchart(obj, first_year, last_year, lats, outfile, tccfile, spad, verbos
             outfile.write(buildchart1(d00,daysinyear,verbose,firstpage))
             firstpage = False
 
-        # LOCAL MEAN TIME OF MERIDIAN PASSAGE  chart
+        # LOCAL MEAN TIME OF MERIDIAN PASSAGE  [= Planet Diagram] chart
 
         if not config.PVonly:
             outfile.write(buildchart2(d00,daysinyear,lats,verbose,firstpage,ts))

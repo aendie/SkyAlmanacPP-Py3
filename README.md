@@ -35,6 +35,7 @@ Please read the following file (in the package): **PPchart usage notes.pdf**
 * Python v3.4 or higher (v3.12 minimum is recommended)
 * Skyfield >= 1.55 (the latest is recommended; see the Skyfield Changelog)
 * numpy >= 2.0.0
+* scipy >= 1.14.1
 * MiKTeX&ensp;or&ensp;TeX Live
 
 **Note that Skyfield version 1.55 is required as a minimum to avert other issues**
@@ -44,7 +45,7 @@ Please read the following file (in the package): **PPchart usage notes.pdf**
 * &ast;.py
 * diagram.png
 
-**Note that the de421.bsp ephemeris will be downloaded automatically**
+**The [DE421 ephemeris](https://pypi.org/project/de421/) is downloaded automatically (as de421.bsp)**
 
 ### INSTALLATION GUIDELINES on Windows 10 or 11:
 
@@ -66,14 +67,14 @@ Please read the following file (in the package): **PPchart usage notes.pdf**
 &emsp;**cd C:\\Python313**  
 &emsp;**python.exe -m pip install --upgrade pip**  
 &emsp;... for a first install (it's preferable to install *wheel* first):  
-&emsp;**pip3 install wheel**  
-&emsp;**pip3 install skyfield**  
+&emsp;**pip install wheel**  
+&emsp;**pip install skyfield**  
+&emsp;**pip install scipy**  
 &emsp;... if already installed, check for upgrades explicitly:  
-&emsp;**pip3 install --upgrade skyfield**  
+&emsp;**pip install --upgrade skyfield scipy**  
 
-&emsp;Put the required files for SkyalmanacPP in a new folder, run Command Prompt in that folder and start with:  
-&emsp;**py -3 PPchart.py**
-
+&emsp;Put the required files for SkyalmanacPP in a new folder, run Command Prompt in that folder and execute with:  
+&emsp;**py PPchart.py**
 
 ### INSTALLATION GUIDELINES on Ubuntu Desktop 19.10 or 20.04, 22.04, 24.04 or 26.04:
 
@@ -87,10 +88,10 @@ Please read the following file (in the package): **PPchart usage notes.pdf**
 &emsp;Install the required astronomical libraries etc.:  
 &emsp;**pip3 install wheel**  
 &emsp;**pip3 install skyfield**  
+&emsp;**pip3 install scipy**  
 
-&emsp;Put the SkyalmanacPP files in a folder and start with:  
+&emsp;Put the SkyalmanacPP files in a folder and execute with:  
 &emsp;**python3 PPchart.py**  
-
 
 ### INSTALLATION GUIDELINES on Ubuntu Desktop 24.04:
 
@@ -98,7 +99,6 @@ Please read the following file (in the package): **PPchart usage notes.pdf**
 &emsp;Please download the file **How to install Skyalmanac on Linux.pdf** for instructions.  
 &emsp;Installation of the PyPI package is described, which is simpler - no other files from GitHub are required.  
 &emsp;Please note that although the documentation refers to **Skyalmanac**, it also applies to **SkyalmanacPP**. Just substitute the correct distribution name.
-
 
 ### INSTALLATION GUIDELINES on Mac OS (old; unverified):
 
@@ -110,6 +110,7 @@ Please read the following file (in the package): **PPchart usage notes.pdf**
 &emsp;**sudo easy_install pip**  
 &emsp;**pip install wheel**  
 &emsp;**pip install skyfield**  
+&emsp;**pip install scipy**  
 
 &emsp;If this command fails, your Mac asks you if you would like to install the header files.  
 &emsp;Do so - you do not need to install the full IDE - and try again.
