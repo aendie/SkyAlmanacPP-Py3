@@ -78,7 +78,7 @@ navstar_fs = "normalsize"   # navigational star fontsize (10pt)
 star_fs = "footnotesize"    # star fontsize (8pt)
 title_fs ="Large"           # title, SHA, DEC fontsize (14.4pt)
 ns_fs = "large"             # North, South fontsize (12pt)
-msgKI = "\nKeyboardInterrupt detected - multiprocessing aborted."
+msgKInt = "\nKeyboardInterrupt detected - multiprocessing aborted."
 
 # Zodiac house signs from 0° to 360° ecliptic longitude at 30° intervals ...
 House_Sign = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricornus', 'Aquarius', 'Pisces']
@@ -197,7 +197,6 @@ def chart_PLANET_VISIBILITY(obj, yy, lats, MPdata, ts):
 % ====== PLANET_VISIBILITY chart ======
 \begin{tikzpicture}"""
 
-    print("    Planet Visibility charts")
     lat = "{:03.1f}".format(abs(lats))
     lns = 'N' if lats >= 0 else 'S'
 
@@ -206,8 +205,10 @@ def chart_PLANET_VISIBILITY(obj, yy, lats, MPdata, ts):
     # unpack Meridian Passage data for the requested year ...
     meridian_pass, object_XY_txt, object_name, object_xidx, mp_offset = MPdata
 
-# --------------------------------------------------------------
-# draw chart vertical lines and label the horizontal axis
+# -------------------------------------------------------------------
+# ----  draw chart vertical lines and label the horizontal axis  ----
+# -------------------------------------------------------------------
+
     global dmax
     tex += r"""
 % draw plot inner vertical lines..."""
@@ -308,7 +309,9 @@ star_fs,((x/10)+2.0)*sf,(ymax+0.25)*sf,"21")
     # ----------------------------------------- end of 'while'
 
 # -------------------------------------------------------------------
-# draw chart horizontal lines and label the vertical axis
+# ----  draw chart horizontal lines and label the vertical axis  ----
+# -------------------------------------------------------------------
+
     tex += r"""
 % draw plot inner horizontal lines..."""
     y = 0       # start at 00h
@@ -353,7 +356,9 @@ ns_fs,(xmax+1/3)*sf,y*sf,abs(y))
   \draw[ultra thin] ({:.3f},{:.3f}) -- ({:.3f},{:.3f});""".format(
 0,-extn*sf,xmax*sf,-extn*sf)
 
-# ------------- Text outside B O R D E R  lines -------------
+# -------------------------------------------------------------
+# -------------  Text outside B O R D E R  lines  -------------
+# -------------------------------------------------------------
 
     # chart title on the left side
     tex += r"""
@@ -384,7 +389,9 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
   \node[font=\{}] at ({:.3f},{:.3f}) {{\fontfamily{{phv}}\color{{airforceBlue}}\textbf{{{}°{}}}}};""".format(
 "large",(-0.95)*sf,-0.82*sf,lat,lns)
 
-# -------------- calculate sunrise/sunset & civil dawn/dusk -------------
+# -------------------------------------------------------------------------
+# --------------  calculate sunrise/sunset & civil dawn/dusk  -------------
+# -------------------------------------------------------------------------
 
     # pack the latitude and twilight value (degrees below horizon) into a tuple
     params = (lats, 6.0, config.orthogonal)
@@ -398,7 +405,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             # RECOMMENDED: chunksize = 1
             listoftup = pool.map(partial_func, range(12), 1)
         except KeyboardInterrupt:
-            print(msgKI)
+            print(msgKInt)
             sys.exit(0)
 
         # assemble the multiprocessed results into lists of data for all days in the year...
@@ -438,13 +445,15 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         # print("civil_PM days",len(civil_PM_txt))
         # print(civil_PM_txt)
 
-# ----------------------------------------------------------
-# ----------------------------------------------------------
-# ------ Get planet data and calculate chart metadata ------
-# ----------------------------------------------------------
-# ----------------------------------------------------------
+# |----------------------------------------------------------|
+# |----------------------------------------------------------|
+# |-----  Get planet data and calculate chart metadata  -----|
+# |----------------------------------------------------------|
+# |----------------------------------------------------------|
 
-# -------------- calculate planet rise/set times -------------
+# ---------------------------------------------------------------
+# --------------  calculate planet rise/set times  --------------
+# ---------------------------------------------------------------
 
     # note: 'planet all day above/below horizon' is only handled in INFERIOR planet logic.
     # obj = 5     # Saturn
@@ -472,8 +481,8 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
     rise_offset = []
     set_offset = []
 
-    # global variables for LOWER_forw, UPPER_back
-    global g_idx, g_c, g_Y, g_rise_seg, g_ab_MP, g_set_seg
+##    # global variables for LOWER_forw, UPPER_back
+##    global g_idx, g_c, g_Y, g_rise_seg, g_ab_MP, g_set_seg
 
     # pack the planet, the latitude and orthogonal data (True/False) into a tuple
     # (note that if data is changed in config.py, it is not picked up when multiprocessing)
@@ -488,7 +497,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             # RECOMMENDED: chunksize = 1
             listoflists = pool.map(partial_func, range(12), 1)
         except KeyboardInterrupt:
-            print(msgKI)
+            print(msgKInt)
             sys.exit(0)
 
         # assemble the multiprocessed results into lists of data for all days in the year...
@@ -508,13 +517,15 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
     else:
         data_per_year = objrise_set3(d00,daystoprocess,params)
 
-    # data consistency check (see Skyfield ISSUE #998)
+# --------------------------------------------------------------------------------
+# --------------  data consistency check (see Skyfield ISSUE #998)  --------------
+# --------------------------------------------------------------------------------
+
     dt = datetime(d00.year, d00.month, d00.day, 0, 0, 0)  # convert to datetime
     idx = 0
     pl_name = ['Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']
     patch_msg = "ISSUE 998:  " + pl_name[obj]
     fail_msg = "ERROR: missing previous planet-event"
-    verbose = False         # suppress additional print statements
     aboveHorizon_tracked = None     # track 'above horizon' state
     last_true_dt0 = None; last_false_dt0 = None
     last_true_rs = ""; last_false_rs = ""
@@ -538,13 +549,13 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                 dtX = riseset_time[0]
 
                 planet_elev, above_horizon = planet_elevation(obj, dtX, lats)
-                if verbose: print("{} elevation at {} = {:.5f}; above horizon: {}".format(pl_name[obj],dtX.utc_iso(' '),planet_elev,above_horizon))
+                #prnt("{} elevation at {} = {:.5f}; above horizon: {}".format(pl_name[obj],dtX.utc_iso(' '),planet_elev,above_horizon))
                 
                 if aboveHorizon_tracked is None:
                     aboveHorizon_tracked = above_horizon
                 elif aboveHorizon_tracked != above_horizon:
                     if last_true_dt0 is not None:
-                        print(patch_msg, last_true_rs, last_true_dt0.utc_iso(' '),"    True -> False")
+                        prnt("{} {} {}     True -> False".format(patch_msg, last_true_rs, last_true_dt0.utc_iso(' ')))
                         patchdata(last_true_event, False)   # patch corrected data...
                         aboveHorizon_tracked = above_horizon
                     else:
@@ -562,7 +573,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
 
             for ndx, dt0 in enumerate(riseset_time):
                 rs = "  rise" if isrise[ndx] else "  set "
-                if verbose: print(rs,dt0.utc_iso(' '),"   ",isTrue[ndx])
+                #prnt(rs,dt0.utc_iso(' '),"   ",isTrue[ndx])
 
                 if isTrue[ndx]:     # if it is a TRUE event
                     last_true_dt0 = dt0; last_true_rs = rs; last_true_event = [idx, ndx]
@@ -579,7 +590,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                             aboveHorizon_tracked = True     # now above horizon
 
                         elif last_false_dt0 is not None:
-                            print(patch_msg, last_false_rs, last_false_dt0.utc_iso(' '),"    False -> True")
+                            prnt("{} {} {}     False -> True".format(patch_msg, last_false_rs, last_false_dt0.utc_iso(' ')))
                             if last_false_event[0] == idx:
                                 isTrue[last_false_event[1]] = True  # patch one of today's events
                             else:
@@ -587,7 +598,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                             last_false_dt0 = None; last_false_event = [None, None]; last_false_rs = ""
 
                         elif last_true_dt0 is not None:
-                            print(patch_msg, last_true_rs, last_true_dt0.utc_iso(' '),"    True -> False")
+                            prnt("{} {} {}     True -> False".format(patch_msg, last_true_rs, last_true_dt0.utc_iso(' ')))
                             if last_true_event[0] == idx:
                                 isTrue[last_true_event[1]] = False  # patch one of today's events
                             else:
@@ -603,7 +614,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                             aboveHorizon_tracked = False    # now below horizon
 
                         elif last_false_dt0 is not None:
-                            print(patch_msg, last_false_rs, last_false_dt0.utc_iso(' '),"    False -> True")
+                            prnt("{} {} {}     False -> True".format(patch_msg, last_false_rs, last_false_dt0.utc_iso(' ')))
                             if last_false_event[0] == idx:
                                 isTrue[last_false_event[1]] = True  # patch today's event
                             else:
@@ -624,6 +635,10 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         idx += 1
         dt += timedelta(days=1)
     # ----------------------------------------- end of 'while'
+
+# -----------------------------------------------------
+# --------------  obtain XY coordinates  --------------
+# -----------------------------------------------------
 
     # For the given year, calculate these values:
     #   pertaining to sunrise/sunset times at 51.5°N 0.0°E:
@@ -800,10 +815,11 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
 ##    for m in range(190,204):
 ##        print("   ",m,"  ",RS_events[m])
 
-    # ----------------------------------------------------------------------------------------------
-    # create objrise_XY_txt, plotrise_XY_txt, rise_offset, riseseg_Ymax, riseseg_Ymin
-    # ... from objrise_Y
-    # ----------------------------------------------------------------------------------------------
+# -------------------------------------------------------
+#                convert objrise_Y into...
+#     objrise_XY_txt, plotrise_XY_txt, rise_offset,
+#     riseseg_Ymax, riseseg_Ymin
+# -------------------------------------------------------
 
     global riseseg_Y, setseg_Y      # for get_Y()
     objrise_XY_txt = []     # RISE orthogonal coordinates
@@ -828,11 +844,11 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
 
     for idx, item in enumerate(objrise_Y):
         hoursAM = item if type(item) is list else [item]
-#            if len(hoursAM) != 1 or hoursAM[0] == None:
-#                print("RISE len = {} on idx {}".format(len(hoursAM),idx))
+        #if len(hoursAM) != 1 or hoursAM[0] == None:
+        #    print("RISE len = {} on idx {}".format(len(hoursAM),idx))
         if hoursAM[0] is None:
             segAM_active = False
-#                print("segAM_active FALSE")
+            #print("segAM_active FALSE")
             continue
 
         for hourAM in hoursAM:
@@ -869,18 +885,19 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         # ----------------------------------------- end of 'for'
     # ----------------------------------------- end of 'for'
 
-    # ----------------------------------------------------------------------------------------------
-    # create objset_XY_txt, plotset_XY_txt, set_offset, setseg_Ymax, setseg_Ymin
-    # ... from objset_Y
-    # ----------------------------------------------------------------------------------------------
+# -------------------------------------------------------
+#                convert objset_Y into...
+#     objset_XY_txt, plotset_XY_txt, set_offset,
+#     setseg_Ymax, setseg_Ymin
+# -------------------------------------------------------
 
     for idx, item in enumerate(objset_Y):
         hoursPM = item if type(item) is list else [item]
-#            if len(hoursPM) != 1 or hoursPM[0] is None:
-#                print("SET  len = {} on idx {}".format(len(hoursPM),idx))
+        #if len(hoursPM) != 1 or hoursPM[0] is None:
+        #    print("SET  len = {} on idx {}".format(len(hoursPM),idx))
         if hoursPM[0] is None:
             segPM_active = False
-#                print("segPM_active FALSE")
+            #print("segPM_active FALSE")
             continue
 
         for hourPM in hoursPM:
@@ -916,9 +933,10 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             prev_hourPM = hourPM
         # ----------------------------------------- end of 'for'
     # ----------------------------------------- end of 'for'
+    # -------------------------------------------------------------------------------
 
-    print("   .   .   .   .   .   .   .   .   .   .  collect Metadata  .   .   .   .   .   .   .   .   .   .")
-    print("days in year: {}   days to process: {}".format(daysinyear,daystoprocess))
+    prnt("   .   .   .   .   .   .   .   .   .   .  collect Metadata  .   .   .   .   .   .   .   .   .   .")
+    prnt("days in year: {}   days to process: {}".format(daysinyear,daystoprocess))
 
     if config.debug_Rsegments:
         for segnum, rise_seg in enumerate(objrise_XY_txt):
@@ -931,7 +949,9 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                 print("   {:6.3f} {:6.3f}".format(x1,y1),end = '')
                 n += 1
                 if n % 5 == 0: print()
+            # ----------------------------------------- end of 'for'
             if n % 5 != 0: print()
+        # ----------------------------------------- end of 'for'
 
     if config.debug_Ssegments:
         for segnum, set_seg in enumerate(objset_XY_txt):
@@ -943,14 +963,18 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                 print("   {:6} {:6.3f}".format(DOY(idx),y1),end = '')
                 n += 1
                 if n % 5 == 0: print()
+            # ----------------------------------------- end of 'for'
             if n % 5 != 0: print()
+        # ----------------------------------------- end of 'for'
 
     # print("'objrise_XY_txt' RISE segment offsets: ",rise_offset, end=" ")
     # print(" days per segment:", end=" ")
     # for i in range(len(objrise_XY_txt)):
         # print(len(objrise_XY_txt[i]),end=" ")
 
-# --------------- build simple lists based on RISE and SET segments ---------------
+# ---------------------------------------------------------------------------------
+# --------------  build simple lists based on RISE and SET segments  --------------
+# ---------------------------------------------------------------------------------
 
     global rise_days, rise_starts, rise_ends    # for fill_below_horizon()
     rise_days = []      # build list of RISE segment span in days
@@ -966,7 +990,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         ldx = idx + lnth - 1
         rise_days.append(ldx-idx)
         rise_range.append(range(idx,idx+lnth))  # last value is excluded from the range!
-        print("RISE segment {} offset: {:3d} = {:6} to {:3d} = {:6}, length {:3d} (spans {} days)".format(ndx,idx,DOY(idx),ldx,DOY(ldx),lnth,lnth-1))
+        prnt("RISE segment {} offset: {:3d} = {:6} to {:3d} = {:6}, length {:3d} (spans {} days)".format(ndx,idx,DOY(idx),ldx,DOY(ldx),lnth,lnth-1))
         if lnth == 1:
             solitary_RISE_seg.append(ndx)
             xR,yR = getXY(objrise_XY_txt[ndx][0])   # start of RISE
@@ -975,11 +999,12 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         rise_starts.append(idx)
         rise_ends.append(ldx)
 
-    print("   max hour per RISE segment:", end=" ")
-    for item in riseseg_Ymax: print("  {:6.3f}".format(item), end="")
-    print("\n   min hour per RISE segment:", end=" ")
-    for item in riseseg_Ymin: print("  {:6.3f}".format(item), end="")
-    print()
+    if verbose:
+        print("   max hour per RISE segment:", end=" ")
+        for item in riseseg_Ymax: print("  {:6.3f}".format(item), end="")
+        print("\n   min hour per RISE segment:", end=" ")
+        for item in riseseg_Ymin: print("  {:6.3f}".format(item), end="")
+        print()
 
     #print("RISE range: ",rise_range)
     # idx = rise_offset[0]
@@ -1006,7 +1031,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         ldx = idx + lnth - 1
         set_days.append(ldx-idx)
         set_range.append(range(idx,idx+lnth))
-        print("SET  segment {} offset: {:3d} = {:6} to {:3d} = {:6}, length {:3d} (spans {} days)".format(ndx,idx,DOY(idx),ldx,DOY(ldx),lnth,lnth-1))
+        prnt("SET  segment {} offset: {:3d} = {:6} to {:3d} = {:6}, length {:3d} (spans {} days)".format(ndx,idx,DOY(idx),ldx,DOY(ldx),lnth,lnth-1))
         if lnth == 1:
             solitary_SET_seg.append(ndx)
             xS,yS = getXY(objset_XY_txt[ndx][0])    # start of SET
@@ -1015,17 +1040,20 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         set_starts.append(idx)
         set_ends.append(ldx)
 
-    print("   max hour per SET  segment:", end=" ")
-    for item in setseg_Ymax: print("  {:6.3f}".format(item), end="")
-    print("\n   min hour per SET  segment:", end=" ")
-    for item in setseg_Ymin: print("  {:6.3f}".format(item), end="")
-    print()
-    #print(rise_days)
-    #print(set_days)
+    if verbose: 
+        print("   max hour per SET  segment:", end=" ")
+        for item in setseg_Ymax: print("  {:6.3f}".format(item), end="")
+        print("\n   min hour per SET  segment:", end=" ")
+        for item in setseg_Ymin: print("  {:6.3f}".format(item), end="")
+        print()
+        #print(rise_days)
+        #print(set_days)
 
+# ---------------------------------------------------------------------------------------
+# -------------  determine if SET or RISE crosses Civil Dawn or Civil Dusk  -------------
+# ---------------------------------------------------------------------------------------
 
-# ------------- determine if SET or RISE crosses Civil Dawn or Civil Dusk -------------
-    global SETcrossesDAWN, SETcrossesDUSK, RISEcrossesDAWN, RISEcrossesDUSK     # for LOWER_forw()
+    global SETcrossesDAWN, SETcrossesDUSK, RISEcrossesDAWN, RISEcrossesDUSK     # originally for LOWER_forw() - now OBSOLETE
     SETcrossesDAWN = []         # per segment: True if SET seg crosses DAWN
     SETcrossesDUSK = []         # per segment: True if SET seg crosses DUSK
     RISEcrossesDAWN = []        # per segment: True if RISE seg crosses DAWN
@@ -1055,7 +1083,9 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             if (yR < dusk) != RISEbelowDUSK:        # does RISE cross DUSK ?
                 RISEcrossesDUSK[Rseg] = True
             ndx += 1
-        print("RISE segment {} crosses Civil...  Dawn: {}   Dusk: {}".format(Rseg,bval(RISEcrossesDAWN[Rseg]),bval(RISEcrossesDUSK[Rseg])))
+        # ----------------------------------------- end of 'for'
+        prnt("RISE segment {} crosses Civil...  Dawn: {}   Dusk: {}".format(Rseg,bval(RISEcrossesDAWN[Rseg]),bval(RISEcrossesDUSK[Rseg])))
+    # ----------------------------------------- end of 'for'
 
     for Sseg, idx in enumerate(set_offset):
         lnth = len(objset_XY_txt[Sseg])
@@ -1081,16 +1111,19 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             if (yS < dusk) != SETbelowDUSK:         # does SET cross DUSK ?
                 SETcrossesDUSK[Sseg] = True
             ndx += 1
-        print("SET  segment {} crosses Civil...  Dawn: {}   Dusk: {}".format(Sseg,bval(SETcrossesDAWN[Sseg]),bval(SETcrossesDUSK[Sseg])))
+        # ----------------------------------------- end of 'for'
+        prnt("SET  segment {} crosses Civil...  Dawn: {}   Dusk: {}".format(Sseg,bval(SETcrossesDAWN[Sseg]),bval(SETcrossesDUSK[Sseg])))
+    # ----------------------------------------- end of 'for'
 
-
-    # ----------------------  Meridian Passage dates when btwn Civil Dawn & Dusk  ----------------------
+# ----------------------------------------------------------------------------------
+# --------------  Meridian Passage dates when btwn Civil Dawn & Dusk  --------------
+# ----------------------------------------------------------------------------------
 
     mp_btwn_dawn_dusk = []  # collect from-to dates when MerPass is between Civil Dawn & Dusk
     for ndx, idx_begin in enumerate(mp_offset):
         lnth = len(object_XY_txt[ndx])
         idx_end = idx_begin + lnth - 1
-        print("MerPass segment {} offset: {:3d} = {:6} to {:3d} = {:6}, length {:3d} (spans {} days)".format(ndx,idx_begin,DOY(idx_begin),idx_end,DOY(idx_end),lnth,lnth-1))
+        prnt("MerPass segment {} offset: {:3d} = {:6} to {:3d} = {:6}, length {:3d} (spans {} days)".format(ndx,idx_begin,DOY(idx_begin),idx_end,DOY(idx_end),lnth,lnth-1))
         # get the 'from-to' date offsets during which MerPass is between Dawn & Dusk
         btwn = False
         for idx in range(idx_begin, idx_end+1):
@@ -1104,7 +1137,9 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                     # print("mp btwn: {} to {}".format(DOY(idx_fr),DOY(idx-1)))
                 btwn = False
 
-# ------------------------  get Civil Dawn and Civil Dusk segment lengths  ------------------------
+# -----------------------------------------------------------------------------
+# --------------  get Civil Dawn and Civil Dusk segment lengths  --------------
+# -----------------------------------------------------------------------------
 
     # get civil DAWN segment lengths
     idx = 0
@@ -1167,18 +1202,18 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
     for i in seglen_DAWN:
         msg += "{}, ".format(DOY(idx))
         idx += abs(i)
-    print("civil dawn seglen_DAWN",seglen_DAWN,msg[:-2]+"]")
+    prnt("civil dawn   seglen_DAWN",seglen_DAWN,msg[:-2]+"]")
     
     idx = 0; msg = " starting at ["
     for i in seglen_DUSK:
         msg += "{}, ".format(DOY(idx))
         idx += abs(i)
-    print("civil dusk seglen_DUSK",seglen_DUSK,msg[:-2]+"]")
+    prnt("civil dusk   seglen_DUSK",seglen_DUSK,msg[:-2]+"]")
 
-# ------------------------------------------------------------------------------------
-# ----- detect whole days with 'planet below horizon' and 'planet above horizon' -----
-# -----     if 'planet above horizon': identify segments that border it          -----
-# ------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------
+# -----  detect whole days with 'planet below horizon' and 'planet above horizon'  -----
+# -----      if 'planet above horizon': identify segments that adjoin it           -----
+# --------------------------------------------------------------------------------------
 
     segR = segS = None
     if len(rise_offset) > 0: segR = 0
@@ -1287,9 +1322,9 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         for rng in dah_range:
             dah_fr = rng.start; dah_to = rng.stop
             lnth = dah_to - dah_fr
-            print("{}  {:3d} = {:6} to {:3d} = {}, {:d} days".format(txt,dah_fr,DOY(dah_fr),dah_to-1,DOY(dah_to-1),lnth))
+            prnt("{}  {:3d} = {:6} to {:3d} = {}, {:d} days".format(txt,dah_fr,DOY(dah_fr),dah_to-1,DOY(dah_to-1),lnth))
             txt = ' ' * n
-    else: print("{}  <no days>".format(txt))
+    else: prnt("{}  <no days>".format(txt))
 
     txt = "planet all day below horizon (DBH) on: "
     n = len(txt)
@@ -1305,16 +1340,17 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         for rng in dbh_range:
             dbh_fr = rng.start; dbh_to = rng.stop
             lnth = dbh_to - dbh_fr
-            print("{}  {:3d} = {:6} to {:3d} = {}, {:d} days".format(txt,dbh_fr,DOY(dbh_fr),dbh_to-1,DOY(dbh_to-1),lnth))
+            prnt("{}  {:3d} = {:6} to {:3d} = {}, {:d} days".format(txt,dbh_fr,DOY(dbh_fr),dbh_to-1,DOY(dbh_to-1),lnth))
             txt = ' ' * n
-    else: print("{}  <no days>".format(txt))
+    else: prnt("{}  <no days>".format(txt))
 
 
     dahseg = []         # list of segments adjoining each 'planet all day above horizon' zone
     dah_starts = []     # days of which dah starts
     dah_ends = []       # days of which dah ends
-    if dah != []:
 
+    if dah == []: dahseg.append([])   # create an empty dahseg[0]
+    else:
         # gather list of days on which DAH starts & ends
         for rng in dah_range:
             dah_fr = rng.start; dah_to = rng.stop - 1
@@ -1381,7 +1417,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             # NOTE: (!) refers to the case when the last SET occurs 2 days before DAH, e.g.
             #       Mercury 2024 65°N. (The day in-between has the last RISE before DAH.)
 
-            if dahseg[zone] != []:
+            if verbose and  dahseg[zone] != []:
                 msg = ""
                 if len(dahoffset) > 1: msg = "{} ".format(zone)
                 print("   segments adjoining DAH zone {}from {} to {}:\n    ".format(msg,DOY(dah_fr),DOY(dah_to)),end='')
@@ -1391,21 +1427,14 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                 print()
         # ----------------------------------------- end of 'for'
 
-        # if dahseg != [[]]:
-            # print("   segments adjoining DAH zone from {} to {}:".format(DOY(dah[0]),DOY(dah[-1])))
-            # print("     <adjoining type>, <seg no>, <+1 above MerPass, -1 below MerPass>\n    ",end='')
-            # for seg in dahseg: print(" {}".format(seg), end = '')
-            # print()
-
-    else:
-        dahseg.append([])   # create an empty dahseg[0]
 
     # if len(dbhoffset) > 1:
         # print("multiple dbh zones ... starting at offset: ", dbhoffset)
     dbhseg = [] # list of segments adjoining each 'planet all day below horizon' zone
 
-    if dbh != []:
-
+    if dbh == []: dbhseg.append([])   # create an empty dbhseg[0]
+    else:
+        # gather list of days on which DBH starts & ends
         for zone, ndx in enumerate(dbhoffset):
             dbhseg.append([])   # new list for a DBH zone
             dbh_fr = dbh[ndx]
@@ -1447,7 +1476,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                     idx = endS - 1
                     dbhseg[zone].append(("SET_before_dbh", set_seg))
 
-            if dbhseg[zone] != []:
+            if verbose and dbhseg[zone] != []:
                 msg = ""
                 if len(dbhoffset) > 1: msg = "{} ".format(zone)
                 print("   segments adjoining DBH zone {}from {} to {}:\n    ".format(msg,DOY(dbh_fr),DOY(dbh_to)),end='')
@@ -1455,14 +1484,13 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                 print()
         # ----------------------------------------- end of 'for'
 
-    else:
-        dbhseg.append([])   # create an empty dbhseg[0]
-
     sdah = sorted(set(dah))     # python sets are by definition unsorted
     sdbh = sorted(set(dbh))     # python sets are by definition unsorted
 
 
-# get the initial/final visibility states at the corners of the plot chart
+# ------------------------------------------------------------------------------------
+# ----  get the initial/final visibility states at the corners of the plot chart  ----
+# ------------------------------------------------------------------------------------
 
     global isSoY, fsSoY, isEoY, fsEoY
     isSoY = get_isSoY(getY(objrise_Y[0]),getY(objset_Y[0]),sdah,sdbh)       # initial state at Start of Year
@@ -1471,16 +1499,16 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
     isEoY = get_isEoY(getY(objrise_Y[d]),getY(objset_Y[d]),sdah,sdbh)       # initial state at End of Year
     fsEoY = get_fsEoY(getY(objrise_Y[d],-1),getY(objset_Y[d],-1),sdah,sdbh) #   final state at End of Year
 
-    print("{} Visibility SoY 00h: {}, SoY 24h: {}, EoY 00h: {}, EoY 24h: {}".format(objn,isSoY,fsSoY,isEoY,fsEoY))
+    prnt("{} Visibility - SoY 00h: {},  SoY 24h: {},  EoY 00h: {},  EoY 24h: {}".format(objn,isSoY,fsSoY,isEoY,fsEoY))
     #print("   isSoY=", isSoY, sep = "", end = "  ")
     #print("fsSoY=", fsSoY, sep = "", end = "  ")
     #print("isEoY=", isEoY, sep = "", end = "  ")
     #print("fsEoY=", fsEoY, sep = "")
 
 
-# ---------------------------------------------------
-# ----------IDENTIFY THE SEGMENT END POINTS ---------
-# ---------------------------------------------------
+# ---------------------------------------------------------------
+# --------------  IDENTIFY ALL SEGMENT END POINTS  --------------
+# ---------------------------------------------------------------
 
 # ... which chart border (SoY EoY 00h 24h) they end on or which DAH/DBH zone they touch
     global rise_ep, set_ep      # for LOWER_forw() & UPPER_back()
@@ -1488,33 +1516,36 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                                        rise_starts,rise_ends,set_starts,set_ends)
     set_ep,  SETflips  = seg_endpoints(set_offset, dah,dbh,dahseg,dbhseg,dahoffset,dbhoffset, \
                                        rise_starts,rise_ends,set_starts,set_ends)
-    print("SoY/EoY = Start/End of Year, 00h = lower border, 24h = upper border, DAH/DBH = adjoins DAH/DBH")
-#    set_ep[0] = ('00h', '00h')
-    txt = ''
-    print("RISE endpoints per segment:",end='')
-    for index, item in enumerate(rise_ep):
-        ep0, ep1 = item
-        if ep0 == ep1 and rise_days[index] == 0:
-            txt += " {},".format(ep0)     # indicates a solitary endpoint (seg length 1; spans 0 days)
-        else: txt += " {} to {},".format(ep0,ep1)
-    print(txt[:-1])
 
-    txt = ''
-    print("SET  endpoints per segment:",end='')
-    for index, item in enumerate(set_ep):
-        ep0, ep1 = item
-        if ep0 == ep1 and set_days[index] == 0:
-            txt += " {},".format(ep0)    # indicates a solitary endpoint (seg length 1; spans 0 days)
-        else: txt += " {} to {},".format(ep0,ep1)
-    print(txt[:-1])
+    if verbose:
+        print("SoY/EoY = Start/End of Year, 00h = lower border, 24h = upper border, DAH/DBH = adjoins DAH/DBH")
+
+        txt = ''
+        print("RISE endpoints per segment:",end='')
+        for index, item in enumerate(rise_ep):
+            ep0, ep1 = item
+            if ep0 == ep1 and rise_days[index] == 0:
+                txt += " {},".format(ep0)     # indicates a solitary endpoint (seg length 1; spans 0 days)
+            else: txt += " {} to {},".format(ep0,ep1)
+        # ----------------------------------------- end of 'for'
+        print(txt[:-1])
+
+        txt = ''
+        print("SET  endpoints per segment:",end='')
+        for index, item in enumerate(set_ep):
+            ep0, ep1 = item
+            if ep0 == ep1 and set_days[index] == 0:
+                txt += " {},".format(ep0)    # indicates a solitary endpoint (seg length 1; spans 0 days)
+            else: txt += " {} to {},".format(ep0,ep1)
+        # ----------------------------------------- end of 'for'
+        print(txt[:-1])
 
 
-# ------------------------------------------------------
-# ------ detect SET-to-RISE 'below horizon' bands ------
-# ------------------------------------------------------
+# ------------------------------------------------------------------------
+# --------------  detect SET-to-RISE 'below horizon' bands  --------------
+# ------------------------------------------------------------------------
 
 # (any two bands that overlap in dates where SET occurs before RISE on the same day)
-# These 'planet below horizon' bands are to be processed as 'GENERIC: SET-to-RISE band'
 
     set_to_rise_pair = []           # overlapping SET-to-RISE segment pair
 
@@ -1548,7 +1579,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         #     all RISE segs that match a SET  seg
         #  OR all SET  segs that match a RISE seg
         # ... as this comprises just one band.
-        print("SET_to_RISE 'below horizon' bands:")
+        prnt("SET_to_RISE 'below horizon' bands:")
         ndx_pair = []       # collect index of each handled SET-to-RISE pair
         i = -1
         for Sseg, Rseg in set_to_rise_pair:
@@ -1571,7 +1602,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                 if new:
                     if ii not in ndx_pair: ndx_pair.append(ii)
             msg = "SET seg {} to RISE seg {}".format(Ssegtxt,Rsegtxt)
-            print("   " + msg)
+            prnt("   " + msg)
             SET_to_RISE_band_txt.append(msg)
             SET_to_RISE_band.append((Sband,Rband))
             if ',' in Rsegtxt: SETseg_to_multiRISE_segs.append(Sseg)
@@ -1595,12 +1626,11 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         # print("   SETseg_to_multiRISE_segs", SETseg_to_multiRISE_segs, "multiSET_to_RISEseg_segs", multiSET_to_RISEseg_segs)
 
 
-# ------------------------------------------------------
-# ------ detect RISE-to-SET 'above horizon' bands ------
-# ------------------------------------------------------
+# ------------------------------------------------------------------------
+# --------------  detect RISE-to-SET 'above horizon' bands  --------------
+# ------------------------------------------------------------------------
 
 # (any two bands that overlap in dates where RISE occurs before SET on the same day)
-# These 'planet above horizon' bands are required for Civil DAWN to DUSK zone: RISE-to-SET band
 
     rise_to_set_pair = []           # overlapping RISE-to-SET segment pair
 
@@ -1639,7 +1669,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         #     all SET  segs that match a RISE seg
         #  OR all RISE segs that match a SET  seg
         # ... as this comprises just one band.
-        print("RISE_to_SET 'above horizon' bands:")
+        prnt("RISE_to_SET 'above horizon' bands:")
         ndx_pair = []       # collect index of each handled RISE-to-SET pair
         ndx_band = -1       # index to last RISE-to-SET band
         i = -1
@@ -1728,16 +1758,17 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                 msg = ' (band within Civil Dawn to Dusk)'
             else:
                 msg += " ({} RISE & {} SET days between Civil Dawn and Dusk)".format(Rdays,Sdays)
-            print(msgs[ndx_band]+msg)
+            prnt(msgs[ndx_band]+msg)
             #print("   band {}: d2d {}, overall {}".format(ndx_band,RISE_to_SET_band_size_d2d[ndx_band],RISE_to_SET_band_size[ndx_band]))
         # ----------------------------------------- end of 'for'
 
     # print("   RISEseg_to_multiSET_segs", RISEseg_to_multiSET_segs, "multiRISE_to_SETseg_segs", multiRISE_to_SETseg_segs)
 
 
-# Identify sections during noDAWN when 'sun above horizon' (shaded gold) is adjacent to the 00h border
-#   (noDAWN is from seglen_DAWN[0] to 'seglen_DAWN[0] - seglen_DAWN[1] - 1'
-# This assists the trace#30 & trace#40 coordinate logic with the contour along the 00h border
+# ----------------------------------------------------------------------------------------------------------------
+# ----  Identify sections during noDAWN when 'sun above horizon' (shaded gold) is adjacent to the 00h border  ----
+# ----               (noDAWN is from seglen_DAWN[0] to 'seglen_DAWN[0] - seglen_DAWN[1] - 1'                  ----
+# ----------------------------------------------------------------------------------------------------------------
 
 # Test cases:       bh = planet below horizon (grey); nv = not visible (gold)
 #   Jupiter 2026 72°N   |nv|      (RISE/SET only after noDAWN)
@@ -1757,117 +1788,120 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
 #   Mercury 2026 69°N   |bh - RISE end - nv - SET end - bh - RISE end - nv - RISE start - bh|
 #   Mercury 2020 67°N   |bh - SET both - nv - SET end - bh - RISE end - nv - RISE start - bh|
 
-    noDAWN_00h_contour = []
-    if len(seglen_DAWN) == 3:
-        noDAWN_fr = seglen_DAWN[0] - 1              # include the day that DAWN ends
-        noDAWN_to = seglen_DAWN[0] - seglen_DAWN[1] # include the day that DAWN restarts
-        rise_fr = rise_to = set_fr = set_to = None
-        if config.debug_00h_contour: print("   noDAWN: contours along 00h...")
+    # noDAWN_00h_contour = []
+    # noDAWN_fr = None
+    # noDAWN_to = None
+    # if len(seglen_DAWN) == 3:
+        # noDAWN_fr = seglen_DAWN[0] - 1              # include the day that DAWN ends
+        # noDAWN_to = seglen_DAWN[0] - seglen_DAWN[1] # include the day that DAWN restarts
+        # rise_fr = rise_to = set_fr = set_to = None
+        # if config.debug_00h_contour: print("   noDAWN: contours along 00h...")
 
-        # get chronological list of RISE/SET segments that "contact" 00h (all and during noDAWN)
-        all_00h_segs = []       # tuple (date offset, RISE seg, SET seg, v)
-        noDAWN_00h_segs = []    # tuple (date offset, RISE seg, SET seg, v)
-                                # v = True if start; False if end; None if singleton (length 1 day)
+        # # get chronological list of RISE/SET segments that "contact" 00h (all and during noDAWN)
+        # all_00h_segs = []       # tuple (date offset, RISE seg, SET seg, v)
+        # noDAWN_00h_segs = []    # tuple (date offset, RISE seg, SET seg, v)
+                                # # v = True if start; False if end; None if singleton (length 1 day)
 
-        for nR in range(len(rise_offset)):
-            rise_fr = rise_starts[nR]
-            rise_to = rise_ends[nR]
-            v = True    # default: start of segment
-            # if segment length 1 (spans 0 days) ...
-            if rise_ep[nR][0] == rise_ep[nR][1] == '00h' and rise_days[nR] == 0: v = None
+        # for nR in range(len(rise_offset)):
+            # rise_fr = rise_starts[nR]
+            # rise_to = rise_ends[nR]
+            # v = True    # default: start of segment
+            # # if segment length 1 (spans 0 days) ...
+            # if rise_ep[nR][0] == rise_ep[nR][1] == '00h' and rise_days[nR] == 0: v = None
 
-            if rise_ep[nR][0] == '00h':
-                all_00h_segs.append((rise_fr, nR, None, v))
-                if noDAWN_fr < rise_fr < noDAWN_to:
-                    noDAWN_00h_segs.append((rise_fr, nR, None, v))
+            # if rise_ep[nR][0] == '00h':
+                # all_00h_segs.append((rise_fr, nR, None, v))
+                # if noDAWN_fr < rise_fr < noDAWN_to:
+                    # noDAWN_00h_segs.append((rise_fr, nR, None, v))
 
-            if rise_ep[nR][1] == '00h' and v is not None:
-                all_00h_segs.append((rise_to, nR, None, False))
-                if noDAWN_fr < rise_to < noDAWN_to:
-                    noDAWN_00h_segs.append((rise_to, nR, None, False))
+            # if rise_ep[nR][1] == '00h' and v is not None:
+                # all_00h_segs.append((rise_to, nR, None, False))
+                # if noDAWN_fr < rise_to < noDAWN_to:
+                    # noDAWN_00h_segs.append((rise_to, nR, None, False))
 
-        for nS in range(len(set_offset)):
-            set_fr = set_starts[nS]
-            set_to = set_ends[nS]
-            v = True    # default: start of segment
-            # if segment length 1 (spans 0 days) ...
-            if set_ep[nS][0] == set_ep[nS][1] == '00h' and set_days[nS] == 0: v = None
+        # for nS in range(len(set_offset)):
+            # set_fr = set_starts[nS]
+            # set_to = set_ends[nS]
+            # v = True    # default: start of segment
+            # # if segment length 1 (spans 0 days) ...
+            # if set_ep[nS][0] == set_ep[nS][1] == '00h' and set_days[nS] == 0: v = None
 
-            if set_ep[nS][0] == '00h':
-                all_00h_segs.append((set_fr, None, nS, v))
-                if noDAWN_fr < set_fr < noDAWN_to:
-                    noDAWN_00h_segs.append((set_fr, None, nS, v))
+            # if set_ep[nS][0] == '00h':
+                # all_00h_segs.append((set_fr, None, nS, v))
+                # if noDAWN_fr < set_fr < noDAWN_to:
+                    # noDAWN_00h_segs.append((set_fr, None, nS, v))
 
-            elif set_ep[nS][1] == '00h' and v is not None:
-                all_00h_segs.append((set_to, None, nS, False))
-                if noDAWN_fr < set_to < noDAWN_to:
-                    noDAWN_00h_segs.append((set_to, None, nS, False))
+            # elif set_ep[nS][1] == '00h' and v is not None:
+                # all_00h_segs.append((set_to, None, nS, False))
+                # if noDAWN_fr < set_to < noDAWN_to:
+                    # noDAWN_00h_segs.append((set_to, None, nS, False))
 
-        # Note: a boolean cannot be compared to 'None' during a sort.
-        #       If the date offsets are the same, one cannot ensure 'None'
-        #       doesn't exist in the second element, e.g. Jupiter 2042 72°N.
-        #       So to be safe, sort only on the first element.
+        # # Note: a boolean cannot be compared to 'None' during a sort.
+        # #       If the date offsets are the same, one cannot ensure 'None'
+        # #       doesn't exist in the second element, e.g. Jupiter 2042 72°N.
+        # #       So to be safe, sort only on the first element.
 
-        all_00h_segs.sort(key=lambda x: x[0])
-        noDAWN_00h_segs.sort(key=lambda x: x[0])
-        #print(all_00h_segs)
+        # all_00h_segs.sort(key=lambda x: x[0])
+        # noDAWN_00h_segs.sort(key=lambda x: x[0])
+        # #print(all_00h_segs)
 
-        # above/below horizon state when noDAWN begins
-        above_horizon = isSoY      # visible state on Jan 1 00:00 (False = below horizon)
-        #print(above_horizon)
-        for item in all_00h_segs:
-            idx, nR, nS, start = item
-            if idx > noDAWN_fr: break
-            #print(DOY(idx),DOY(noDAWN_fr))
-            if nR is not None and rise_ep[nR][0] == '00h': above_horizon = False
-            if nR is not None and rise_ep[nR][1] == '00h': above_horizon = True
-            if nS is not None and set_ep[nS][0]  == '00h': above_horizon = True
-            if nS is not None and set_ep[nS][1]  == '00h': above_horizon = False
-        #print(above_horizon)
+        # # above/below horizon state when noDAWN begins
+        # above_horizon = isSoY      # visible state on Jan 1 00:00 (False = below horizon)
+        # #print(above_horizon)
+        # for item in all_00h_segs:
+            # idx, nR, nS, start = item
+            # if idx > noDAWN_fr: break
+            # #print(DOY(idx),DOY(noDAWN_fr))
+            # if nR is not None and rise_ep[nR][0] == '00h': above_horizon = False
+            # if nR is not None and rise_ep[nR][1] == '00h': above_horizon = True
+            # if nS is not None and set_ep[nS][0]  == '00h': above_horizon = True
+            # if nS is not None and set_ep[nS][1]  == '00h': above_horizon = False
+        # #print(above_horizon)
 
-        txt = '   '
-        for idx, nR, nS, start in noDAWN_00h_segs:
-            if len(txt) > 8: txt += ", "
-            txt += DOY(idx)
-            if nR is not None: txt += " Rise {} ".format(nR)
-            if nS is not None: txt += " Set {} ".format(nS)
-            if start is None: sten = "both"
-            else: sten = "start" if start else "end"
-            txt += sten
-        if len(txt) > 3: print("segments adjoining the 00h border:\n" + txt)
+        # txt = '   '
+        # for idx, nR, nS, start in noDAWN_00h_segs:
+            # if len(txt) > 8: txt += ", "
+            # txt += DOY(idx)
+            # if nR is not None: txt += " Rise {} ".format(nR)
+            # if nS is not None: txt += " Set {} ".format(nS)
+            # if start is None: sten = "both"
+            # else: sten = "start" if start else "end"
+            # txt += sten
+        # if len(txt) > 3: print("segments adjoining the 00h border:\n" + txt)
 
-        # inspect segment endpoints during noDAWN chronologically...
-        n = len(noDAWN_00h_segs)
-        idx0 = idx1 = None
+        # # inspect segment endpoints during noDAWN chronologically...
+        # n = len(noDAWN_00h_segs)
+        # idx0 = idx1 = None
 
-        for index, item in enumerate(noDAWN_00h_segs):
-            idx, nR, nS, start = item
-            if nS is not None and start is None:
-                above_horizon = not above_horizon
-                if above_horizon: idx0 = idx
-                else:             idx1 = idx
-            else:
-                if nS is not None and start:     idx0 = idx; above_horizon = True   # Mars 2032 66°N
-                if nS is not None and not start: idx1 = idx; above_horizon = False  # Mercury 2033 65°N
-            if nR is not None and not start: idx0 = idx; above_horizon = True       # Mercury 2033 68°N
-            if nR is not None and start:     idx1 = idx; above_horizon = False      # Mercury 2033 68°N
+        # for index, item in enumerate(noDAWN_00h_segs):
+            # idx, nR, nS, start = item
+            # if nS is not None and start is None:
+                # above_horizon = not above_horizon
+                # if above_horizon: idx0 = idx
+                # else:             idx1 = idx
+            # else:
+                # if nS is not None and start:     idx0 = idx; above_horizon = True   # Mars 2032 66°N
+                # if nS is not None and not start: idx1 = idx; above_horizon = False  # Mercury 2033 65°N
+            # if nR is not None and not start: idx0 = idx; above_horizon = True       # Mercury 2033 68°N
+            # if nR is not None and start:     idx1 = idx; above_horizon = False      # Mercury 2033 68°N
 
-            if index == 0   and idx0 is None and idx1 is not None: idx0 = noDAWN_fr
-            if index == n-1 and idx0 is not None and idx1 is None: idx1 = noDAWN_to
-            if idx0 is not None and idx1 is not None and idx1 > idx0:
-                if config.debug_00h_contour: print("        {:6} to {:6}".format(DOY(idx0),DOY(idx1)))
-                noDAWN_00h_contour.append((idx0, idx1))
-                idx0 = idx1 = None
+            # if index == 0   and idx0 is None and idx1 is not None: idx0 = noDAWN_fr
+            # if index == n-1 and idx0 is not None and idx1 is None: idx1 = noDAWN_to
+            # if idx0 is not None and idx1 is not None and idx1 > idx0:
+                # if config.debug_00h_contour: print("        {:6} to {:6}".format(DOY(idx0),DOY(idx1)))
+                # noDAWN_00h_contour.append((idx0, idx1))
+                # idx0 = idx1 = None
 
-        if n == 0 and above_horizon:  # if no RISE/SET segments that "contact" 00h during noDAWN
-            idx0 = noDAWN_fr; idx1 = noDAWN_to
-            if config.debug_00h_contour: print("        {:6} to {:6}".format(DOY(idx0),DOY(idx1)))
-            noDAWN_00h_contour.append((idx0, idx1))
+        # if n == 0 and above_horizon:  # if no RISE/SET segments that "contact" 00h during noDAWN
+            # idx0 = noDAWN_fr; idx1 = noDAWN_to
+            # if config.debug_00h_contour: print("        {:6} to {:6}".format(DOY(idx0),DOY(idx1)))
+            # noDAWN_00h_contour.append((idx0, idx1))
 
 
-# Identify sections during noDUSK when 'sun above horizon' (shaded gold) is adjacent to the 24h border
-#   (noDUSK is from seglen_DUSK[0] to 'seglen_DUSK[0] - seglen_DUSK[1] - 1'
-# This assists the trace#30 & trace#40 coordinate logic with the contour along the 24h border
+# ----------------------------------------------------------------------------------------------------------------
+# ----  Identify sections during noDUSK when 'sun above horizon' (shaded gold) is adjacent to the 24h border  ----
+# ----               (noDUSK is from seglen_DUSK[0] to 'seglen_DUSK[0] - seglen_DUSK[1] - 1'                  ----
+# ----------------------------------------------------------------------------------------------------------------
 
 # Test cases:       bh = planet below horizon (grey); nv = not visible (gold)
 #   Jupiter 2026 72°N   |nv|      (RISE/SET only after noDUSK)
@@ -1879,113 +1913,113 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
 #   Mercury 2026 69°N   |bh - SET end - nv - SET start - bh - RISE start - nv - RISE end - bh|
 #   Venus   2020 68°N   |nv - RISE both - bh - RISE start - nv|
 
-    noDUSK_24h_contour = []
-    noDUSK_fr = None
-    noDUSK_to = None
-    if len(seglen_DUSK) == 3:
-        noDUSK_fr = seglen_DUSK[0] - 1              # include the day that DUSK ends
-        noDUSK_to = seglen_DUSK[0] - seglen_DUSK[1] # include the day that DUSK restarts
-        rise_fr = rise_to = set_fr = set_to = None
-        if config.debug_24h_contour: print("   noDUSK: contours along 24h...")
+    # noDUSK_24h_contour = []
+    # noDUSK_fr = None
+    # noDUSK_to = None
+    # if len(seglen_DUSK) == 3:
+        # noDUSK_fr = seglen_DUSK[0] - 1              # include the day that DUSK ends
+        # noDUSK_to = seglen_DUSK[0] - seglen_DUSK[1] # include the day that DUSK restarts
+        # rise_fr = rise_to = set_fr = set_to = None
+        # if config.debug_24h_contour: print("   noDUSK: contours along 24h...")
 
-        # get chronological list of RISE/SET segments that "contact" 24h (all and during noDUSK)
-        all_24h_segs = []       # tuple (date offset, RISE seg, SET seg, v)
-        noDUSK_24h_segs = []    # tuple (date offset, RISE seg, SET seg, v)
-                                # v = True if start; False if end; None if singleton (length 1 day)
+        # # get chronological list of RISE/SET segments that "contact" 24h (all and during noDUSK)
+        # all_24h_segs = []       # tuple (date offset, RISE seg, SET seg, v)
+        # noDUSK_24h_segs = []    # tuple (date offset, RISE seg, SET seg, v)
+                                # # v = True if start; False if end; None if singleton (length 1 day)
 
-        for nR in range(len(rise_offset)):
-            rise_fr = rise_starts[nR]
-            rise_to = rise_ends[nR]
-            v = True    # default: start of segment
-            # if segment length 1 (spans 0 days) ...
-            if rise_ep[nR][0] == rise_ep[nR][1] == '24h' and rise_days[nR] == 0: v = None
+        # for nR in range(len(rise_offset)):
+            # rise_fr = rise_starts[nR]
+            # rise_to = rise_ends[nR]
+            # v = True    # default: start of segment
+            # # if segment length 1 (spans 0 days) ...
+            # if rise_ep[nR][0] == rise_ep[nR][1] == '24h' and rise_days[nR] == 0: v = None
 
-            if rise_ep[nR][0] == '24h':
-                all_24h_segs.append((rise_fr, nR, None, v))
-                if noDUSK_fr < rise_fr < noDUSK_to:
-                    noDUSK_24h_segs.append((rise_fr, nR, None, v))
+            # if rise_ep[nR][0] == '24h':
+                # all_24h_segs.append((rise_fr, nR, None, v))
+                # if noDUSK_fr < rise_fr < noDUSK_to:
+                    # noDUSK_24h_segs.append((rise_fr, nR, None, v))
 
-            if rise_ep[nR][1] == '24h' and v is not None:
-                all_24h_segs.append((rise_to, nR, None, False))
-                if noDUSK_fr < rise_to < noDUSK_to:
-                    noDUSK_24h_segs.append((rise_to, nR, None, False))
+            # if rise_ep[nR][1] == '24h' and v is not None:
+                # all_24h_segs.append((rise_to, nR, None, False))
+                # if noDUSK_fr < rise_to < noDUSK_to:
+                    # noDUSK_24h_segs.append((rise_to, nR, None, False))
 
-        for nS in range(len(set_offset)):
-            set_fr = set_starts[nS]
-            set_to = set_ends[nS]
-            v = True    # default: start of segment
-            # if segment length 1 (spans 0 days) ...
-            if set_ep[nS][0] == set_ep[nS][1] == '24h' and set_days[nS] == 0: v = None
+        # for nS in range(len(set_offset)):
+            # set_fr = set_starts[nS]
+            # set_to = set_ends[nS]
+            # v = True    # default: start of segment
+            # # if segment length 1 (spans 0 days) ...
+            # if set_ep[nS][0] == set_ep[nS][1] == '24h' and set_days[nS] == 0: v = None
 
-            if set_ep[nS][0] == '24h':
-                all_24h_segs.append((set_fr, None, nS, v))
-                if noDUSK_fr < set_fr < noDUSK_to:
-                    noDUSK_24h_segs.append((set_fr, None, nS, v))
+            # if set_ep[nS][0] == '24h':
+                # all_24h_segs.append((set_fr, None, nS, v))
+                # if noDUSK_fr < set_fr < noDUSK_to:
+                    # noDUSK_24h_segs.append((set_fr, None, nS, v))
 
-            elif set_ep[nS][1] == '24h' and v is not None:
-                all_24h_segs.append((set_to, None, nS, False))
-                if noDUSK_fr < set_to < noDUSK_to:
-                    noDUSK_24h_segs.append((set_to, None, nS, False))
+            # elif set_ep[nS][1] == '24h' and v is not None:
+                # all_24h_segs.append((set_to, None, nS, False))
+                # if noDUSK_fr < set_to < noDUSK_to:
+                    # noDUSK_24h_segs.append((set_to, None, nS, False))
 
-        # Note: a boolean cannot be compared to 'None' during a sort.
-        #       If the date offsets are the same, one cannot ensure 'None'
-        #       doesn't exist in the second element, e.g. Jupiter 2008 68°N.
-        #       So to be safe, sort only on the first element.
+        # # Note: a boolean cannot be compared to 'None' during a sort.
+        # #       If the date offsets are the same, one cannot ensure 'None'
+        # #       doesn't exist in the second element, e.g. Jupiter 2008 68°N.
+        # #       So to be safe, sort only on the first element.
         
-        all_24h_segs.sort(key=lambda x: x[0])
-        noDUSK_24h_segs.sort(key=lambda x: x[0])
-        #print(all_24h_segs)
+        # all_24h_segs.sort(key=lambda x: x[0])
+        # noDUSK_24h_segs.sort(key=lambda x: x[0])
+        # #print(all_24h_segs)
 
-        # above/below horizon state when noDUSK begins
-        above_horizon = fsSoY      # visible state on Jan 1 24:00 (False = below horizon)
-        #print(above_horizon)
-        for item in all_24h_segs:
-            idx, nR, nS, start = item
-            if idx > noDUSK_fr: break
-            #print(DOY(idx),DOY(noDUSK_fr))
-            if nR is not None and rise_ep[nR][0] == '24h': above_horizon = True
-            if nR is not None and rise_ep[nR][1] == '24h': above_horizon = False
-            if nS is not None and set_ep[nS][0]  == '24h': above_horizon = False
-            if nS is not None and set_ep[nS][1]  == '24h': above_horizon = True
-        #print(above_horizon)
+        # # above/below horizon state when noDUSK begins
+        # above_horizon = fsSoY      # visible state on Jan 1 24:00 (False = below horizon)
+        # #print(above_horizon)
+        # for item in all_24h_segs:
+            # idx, nR, nS, start = item
+            # if idx > noDUSK_fr: break
+            # #print(DOY(idx),DOY(noDUSK_fr))
+            # if nR is not None and rise_ep[nR][0] == '24h': above_horizon = True
+            # if nR is not None and rise_ep[nR][1] == '24h': above_horizon = False
+            # if nS is not None and set_ep[nS][0]  == '24h': above_horizon = False
+            # if nS is not None and set_ep[nS][1]  == '24h': above_horizon = True
+        # #print(above_horizon)
 
-        txt = '   '
-        for idx, nR, nS, start in noDUSK_24h_segs:
-            if len(txt) > 8: txt += ", "
-            txt += DOY(idx)
-            if nR is not None: txt += " Rise {} ".format(nR)
-            if nS is not None: txt += " Set {} ".format(nS)
-            if start is None: sten = "both"
-            else: sten = "start" if start else "end"
-            txt += sten
-        if len(txt) > 3: print("segments adjoining the 24h border:\n" + txt)
+        # txt = '   '
+        # for idx, nR, nS, start in noDUSK_24h_segs:
+            # if len(txt) > 8: txt += ", "
+            # txt += DOY(idx)
+            # if nR is not None: txt += " Rise {} ".format(nR)
+            # if nS is not None: txt += " Set {} ".format(nS)
+            # if start is None: sten = "both"
+            # else: sten = "start" if start else "end"
+            # txt += sten
+        # if len(txt) > 3: print("segments adjoining the 24h border:\n" + txt)
 
-        # inspect segment endpoints during noDUSK chronologically...
-        n = len(noDUSK_24h_segs)
-        idx0 = idx1 = None
-        for index, item in enumerate(noDUSK_24h_segs):
-            idx, nR, nS, start = item
-            if nR is not None and start is None:
-                above_horizon = not above_horizon
-                if above_horizon: idx0 = idx
-                else:             idx1 = idx
-            else:
-                if nR is not None and start:     idx0 = idx; above_horizon = True
-                if nR is not None and not start: idx1 = idx; above_horizon = False
-            if nS is not None and not start: idx0 = idx; above_horizon = True
-            if nS is not None and start:     idx1 = idx; above_horizon = False
+        # # inspect segment endpoints during noDUSK chronologically...
+        # n = len(noDUSK_24h_segs)
+        # idx0 = idx1 = None
+        # for index, item in enumerate(noDUSK_24h_segs):
+            # idx, nR, nS, start = item
+            # if nR is not None and start is None:
+                # above_horizon = not above_horizon
+                # if above_horizon: idx0 = idx
+                # else:             idx1 = idx
+            # else:
+                # if nR is not None and start:     idx0 = idx; above_horizon = True
+                # if nR is not None and not start: idx1 = idx; above_horizon = False
+            # if nS is not None and not start: idx0 = idx; above_horizon = True
+            # if nS is not None and start:     idx1 = idx; above_horizon = False
 
-            if index == 0   and idx0 is None and idx1 is not None: idx0 = noDUSK_fr
-            if index == n-1 and idx0 is not None and idx1 is None: idx1 = noDUSK_to
-            if idx0 is not None and idx1 is not None and idx1 > idx0:
-                if config.debug_24h_contour: print("        {:6} to {:6}".format(DOY(idx0),DOY(idx1)))
-                noDUSK_24h_contour.append((idx0, idx1))
-                idx0 = idx1 = None
+            # if index == 0   and idx0 is None and idx1 is not None: idx0 = noDUSK_fr
+            # if index == n-1 and idx0 is not None and idx1 is None: idx1 = noDUSK_to
+            # if idx0 is not None and idx1 is not None and idx1 > idx0:
+                # if config.debug_24h_contour: print("        {:6} to {:6}".format(DOY(idx0),DOY(idx1)))
+                # noDUSK_24h_contour.append((idx0, idx1))
+                # idx0 = idx1 = None
 
-        if n == 0 and above_horizon:  # if no RISE/SET segments that "contact" 24h during noDUSK
-            idx0 = noDUSK_fr; idx1 = noDUSK_to
-            if config.debug_24h_contour: print("        {:6} to {:6}".format(DOY(idx0),DOY(idx1)))
-            noDUSK_24h_contour.append((idx0, idx1))
+        # if n == 0 and above_horizon:  # if no RISE/SET segments that "contact" 24h during noDUSK
+            # idx0 = noDUSK_fr; idx1 = noDUSK_to
+            # if config.debug_24h_contour: print("        {:6} to {:6}".format(DOY(idx0),DOY(idx1)))
+            # noDUSK_24h_contour.append((idx0, idx1))
 
 
 # ---------------------------------------------------------------------------
@@ -2087,7 +2121,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                 pBh_before[zone] = -1  # 'planet all day below horizon zone' RISE & SET below mpass
             if ySe > mpass and yRe > mpass:
                 pBh_before[zone] = 1   # 'planet all day below horizon zone' RISE & SET above mpass
-            print("   pBh_before(DBH zone {}) = {:2}  RISE seg {}, SET seg {}".format(zone,pBh_before[zone], rise_seg, set_seg))
+            prnt("   pBh_before(DBH zone {}) = {:2}  RISE seg {}, SET seg {}".format(zone,pBh_before[zone], rise_seg, set_seg))
 
         # get the segments to process after DBH
         # note: zero length segments have to be skipped (as they are the first match)
@@ -2124,7 +2158,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                 pBh_after[zone] = -1    # 'planet all day below horizon zone' RISE & SET below mpass
             if yS > mpass and yR > mpass:
                 pBh_after[zone] = 1     # 'planet all day below horizon zone' RISE & SET above mpass
-            print("   pBh_after (DBH zone {}) = {:2}  RISE seg {}, SET seg {}".format(zone,pBh_after[zone], rise_seg, set_seg))
+            prnt("   pBh_after (DBH zone {}) = {:2}  RISE seg {}, SET seg {}".format(zone,pBh_after[zone], rise_seg, set_seg))
 
     #print(pBh_before)
 # ---------------------------------------------------------------------------
@@ -2174,7 +2208,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                 pAh_before[zone] = -1  # 'planet all day above horizon zone' RISE & SET below mpass
             if ySe > mpass and yRe > mpass:
                 pAh_before[zone] = 1   # 'planet all day above horizon zone' RISE & SET above mpass
-            print("   pAh_before(DAH zone {}) = {:2}  RISE seg {}, SET seg {}".format(zone,pAh_before[zone], rise_seg, set_seg))
+            prnt("   pAh_before(DAH zone {}) = {:2}  RISE seg {}, SET seg {}".format(zone,pAh_before[zone], rise_seg, set_seg))
 
         # ========== get the segments to process after a DAH zone ==========
         # note: zero length segments have to be skipped (as they are the first match)
@@ -2211,50 +2245,51 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                 pAh_after[zone] = -1  # 'planet all day above horizon zone' RISE & SET below mpass
             if yS > mpass and yR > mpass:
                 pAh_after[zone] = 1   # 'planet all day above horizon zone' RISE & SET above mpass
-            print("   pAh_after (DAH zone {}) = {:2}  RISE seg {}, SET seg {}".format(zone,pAh_after[zone], rise_seg, set_seg))
+            prnt("   pAh_after (DAH zone {}) = {:2}  RISE seg {}, SET seg {}".format(zone,pAh_after[zone], rise_seg, set_seg))
 
 # ----------------------------------------------------------------------------
 # ------------ establish 'dayinitial' and 'dayfinal' based on DBH ------------
+# ----------------------------------------------------------------------------
 
-    dayinitial = 0
-    dayfinal = daystoprocess-1
-    fdaDBH_X = 0.0              # in tikz units
-    ldbDBH_X = float("%04.3f"%((daystoprocess-1)/10*sf))  # in tikz units
-    fdaDBH = 0                  # first day (offset) after DBH at beginning of year
-    ldbDBH = daystoprocess-1    # last  day (offset) before DBH at end of year
-    if dbh != []:
-        if dbh[-1] == daystoprocess-1:
-            n = daystoprocess - 1
-            i = -1
-            while -i <= len(dbh):
-                if dbh[i] != n: break
-                dayfinal = dbh[i]
-                n -= 1
-                i -= 1
-            dayfinal -= 1
-            idx0 = dayfinal/10*sf
-            idxs = "%04.3f" % idx0  # rounded value
-            ldbDBH_X = float(idxs)  # tikz units
-            ldbDBH = dayfinal       # day offset
-            print("last day before DBH at end of year: {} offset {} x={}".format(DOY(dayfinal),dayfinal,idxs))
-        if dbh[0] == 0:
-            n = 0
-            for idx in sdbh:
-                if idx == n: dayinitial = idx
-                else: break
-                n += 1
-            dayinitial += 1
-            idx0 = dayinitial/10*sf
-            idxs = "%04.3f" % idx0  # rounded value
-            fdaDBH_X = float(idxs)  # tikz units
-            fdaDBH = dayinitial
-            print("first day after DBH at beginning of year: {} offset {} x={}".format(DOY(dayinitial),dayinitial,idxs))
+    # dayinitial = 0
+    # dayfinal = daystoprocess-1
+    # fdaDBH_X = 0.0              # in tikz units
+    # ldbDBH_X = float("%04.3f"%((daystoprocess-1)/10*sf))  # in tikz units
+    # fdaDBH = 0                  # first day (offset) after DBH at beginning of year
+    # ldbDBH = daystoprocess-1    # last  day (offset) before DBH at end of year
+    # if dbh != []:
+        # if dbh[-1] == daystoprocess-1:
+            # n = daystoprocess - 1
+            # i = -1
+            # while -i <= len(dbh):
+                # if dbh[i] != n: break
+                # dayfinal = dbh[i]
+                # n -= 1
+                # i -= 1
+            # dayfinal -= 1
+            # idx0 = dayfinal/10*sf
+            # idxs = "%04.3f" % idx0  # rounded value
+            # ldbDBH_X = float(idxs)  # tikz units
+            # ldbDBH = dayfinal       # day offset
+            # print("last day before DBH at end of year: {} offset {} x={}".format(DOY(dayfinal),dayfinal,idxs))
+        # if dbh[0] == 0:
+            # n = 0
+            # for idx in sdbh:
+                # if idx == n: dayinitial = idx
+                # else: break
+                # n += 1
+            # dayinitial += 1
+            # idx0 = dayinitial/10*sf
+            # idxs = "%04.3f" % idx0  # rounded value
+            # fdaDBH_X = float(idxs)  # tikz units
+            # fdaDBH = dayinitial
+            # print("first day after DBH at beginning of year: {} offset {} x={}".format(DOY(dayinitial),dayinitial,idxs))
 
-# .............................................................
-# .........  handle solitary evets before/after DAH  ..........
-#  O N L Y   R E Q U I R E D   f o r   G R E Y   S H A D I N G
-#    e.g.  Mercury 71°N 2000
-# .............................................................
+# ----------------------------------------------------------------------
+# --------------  handle solitary evets before/after DAH  --------------
+#       O N L Y   R E Q U I R E D   f o r   G R E Y   S H A D I N G
+#          e.g.  Mercury 71°N 2000
+# ----------------------------------------------------------------------
 
 # Solitary RISE/SET events (with length 1 day) are removed from the list of segments that require
 #  to be in a path that describes an area to be filled with colour (because they have no width).
@@ -2298,28 +2333,32 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
 
             if txt == "RISE_before_dah" and rise_days[seg] == 0:
                 if Send == rise_ends[seg]:
-                    print("patch SET seg {} end: {} --> {}".format(Sbefore,set_ep[Sbefore][1],rise_ep[seg][1]))
+                    prnt("patch SET seg {} end: {} --> {}".format(Sbefore,set_ep[Sbefore][1],rise_ep[seg][1]))
                     set_ep[Sbefore] = (set_ep[Sbefore][0], rise_ep[seg][1])
 
             if txt == "SET_before_dah" and set_days[seg] == 0:
                 if Rend == set_ends[seg]:
-                    print("patch RISE seg {} end: {} --> {}".format(Rbefore,rise_ep[Rbefore][1],set_ep[seg][1]))
+                    prnt("patch RISE seg {} end: {} --> {}".format(Rbefore,rise_ep[Rbefore][1],set_ep[seg][1]))
                     rise_ep[Rbefore] = (rise_ep[Rbefore][0], set_ep[seg][1])
 
             if txt == "RISE_after_dah" and rise_days[seg] == 0:
                 if Sstart == rise_starts[seg]:
-                    print("patch SET seg {} start: {} --> {}".format(Safter,set_ep[Safter][0],rise_ep[seg][0]))
+                    prnt("patch SET seg {} start: {} --> {}".format(Safter,set_ep[Safter][0],rise_ep[seg][0]))
                     set_ep[Safter] = (rise_ep[seg][0], set_ep[Safter][1])
 
             if txt == "SET_after_dah" and set_days[seg] == 0:
                 if Rstart == set_starts[seg]:
-                    print("patch RISE seg {} start: {} --> {}".format(Rafter,rise_ep[Rafter][0],set_ep[seg][0]))
+                    prnt("patch RISE seg {} start: {} --> {}".format(Rafter,rise_ep[Rafter][0],set_ep[seg][0]))
                     rise_ep[Rafter] = (set_ep[seg][0], rise_ep[Rafter][1])
         # ----------------------------------------- end of 'for'
     # ----------------------------------------- end of 'for'
     # print(RISEep)
     # print(RISEep is rise_ep)
-# ------------------------ collect useful data for text annotations ------------------------
+
+
+# ------------------------------------------------------------------------
+# --------------  collect useful data for TEXTt annotations  --------------
+# ------------------------------------------------------------------------
 
     # we need to define 'meridian passage' now but use tex999 later
     tex999 = LocalMeanTimeOfMeridianPassage(obj, object_name, object_XY_txt)
@@ -2338,7 +2377,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             hrAMt = "{:4.1f}".format(hrAMto[i]) if hrAMto[i] is not None else "None"
             hrPMf = "{:4.1f}".format(hrPMfr[i]) if hrPMfr[i] is not None else "None"
             hrPMt = "{:4.1f}".format(hrPMto[i]) if hrPMto[i] is not None else "None"
-            print("{:6}:   AM {}-{}   PM {}-{}".format(DOY(idx),hrAMf,hrAMt,hrPMf,hrPMt))
+            prnt("{:6}:   AM {}-{}   PM {}-{}".format(DOY(idx),hrAMf,hrAMt,hrPMf,hrPMt))
 
     # # get text positioning metadata for 'planet visible'...
     idx_hrAM, hrAM, idx_hrPM, hrPM = Planet_Vis_Zone(verticals, vis_frto)
@@ -2351,8 +2390,10 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
     hr_preMP, hr_postMP, idx_preMP_max, idx_postMP_max, ang_preMP, ang_postMP = Planet_Sun_Zone(dbh, verticals)
 
 
-# .............. add   T E X T  /  A N N O T A T I O N ..............
-#                     "<planet name>", "visible"
+# .....................................................................
+# ..............  add   T E X T  /  A N N O T A T I O N  ..............
+# ..............      "<planet name>", "visible"         ..............
+# .....................................................................
 #   Note: text is printed with a white background for better readability.
 #   Note: this text may in a few cases be overwriten by a neighbouring grey or gold shaded area.
 #         (See Mars 2003 72°N.)
@@ -2386,7 +2427,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
 # ||---------------------------------------------------------------------------||
 
     shape = "rectangular area" if config.orthogonal else "rhomboid"
-    print("   .   .   .   .   .   .  fill grey 'planet all day below horizon' {}  .   .   .   .   .   .".format(shape))
+    prnt("   .   .   .   .   .   .  fill grey 'planet all day below horizon' {}  .   .   .   .   .   .".format(shape))
 
     # global code_cov   # for 'flush_AMbuf()' & 'flush_PMbuf()'
     code_cov = []       # code coverage ... list of trace# used
@@ -2427,7 +2468,10 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
 
             if idx_to - idx_fr > 25:    # add "below horizon" if DBH wide enough
 
-                # .............. add   T E X T  /  A N N O T A T I O N ..............
+                # .....................................................................
+                # ..............  add   T E X T  /  A N N O T A T I O N  ..............
+                # ..............         reserve "below horizon"         ..............
+                # .....................................................................
                 # reserve "below horizon" locations (DO NOT PRINT YET ... grey shading will overwrie it)
                 mid_idx = int((idx_fr + idx_to) / 2.0)      # mid-idx
                 for hr in [2, 22]:
@@ -2443,12 +2487,12 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             txt = 'path:'
             n = p.find(',', 70)
             while n != -1:
-                print("      {}       {}".format(txt,p[:n+1]))
+                prnt("      {}       {}".format(txt,p[:n+1]))
                 tp.append("{} {}".format(txt,p[:n+1]))
                 txt = '     '
                 p = p[n+1:]
                 n = p.find(',', 70)
-            print("      {}       {}".format(txt,p))
+            prnt("      {}       {}".format(txt,p))
             tp.append("{} {}".format(txt,p))
 
             tex += fillpath(path, 'LightSlateGrey', '0.9', tp)
@@ -2460,7 +2504,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
 # ......  do this now not to overwrite text annotations  ......
 # .............................................................
 
-    print("   .   .   .   .   .   .  fill gold 'planet all day above horizon' {}  .   .   .   .   .   .".format(shape))
+    prnt("   .   .   .   .   .   .  fill gold 'planet all day above horizon' {}  .   .   .   .   .   .".format(shape))
 
     if not config.PV_nsa and not config.PV_nsdah and dah != []:
 
@@ -2550,20 +2594,20 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             txt = 'path:'
             n = p.find(',', 70)
             while n != -1:
-                print("      {}       {}".format(txt,p[:n+1]))
+                prnt("      {}       {}".format(txt,p[:n+1]))
                 tp.append("{} {}".format(txt,p[:n+1]))
                 txt = '     '
                 p = p[n+1:]
                 n = p.find(',', 70)
-            print("      {}       {}".format(txt,p))
+            prnt("      {}       {}".format(txt,p))
             tp.append("{} {}".format(txt,p))
 
             tex += fillpath(path, 'Gold', '0.85', tp)
         # ----------------------------------------- end of 'for'
 
-# ...........................................................
-# ...... gather events (rise, set, dawn, dusk) per day ......
-# ...........................................................
+# .............................................................
+# ......  gather events (rise, set, dawn, dusk) per day  ......
+# .............................................................
  
     idx = 0
     Rseg = 0; Sseg = 0
@@ -2616,9 +2660,9 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
     #for idx in range(10):
         #print(dailyevents[idx])
 
-# ...........................................................
-# .............  get sequence of events per day .............
-# ...........................................................
+# ............................................................
+# .............  get sequence of events per day  .............
+# ............................................................
  
     idx = 0
     all_et  = []    # sequence of events per day
@@ -2650,18 +2694,18 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
 
 # ||---------------------------------------------------------------------------||
 # ||---------------------------------------------------------------------------||
-# ||------ fill 'planet below horizon' (invisible due to altitude) areas ------||
-# ||---------------------------------------------------------------------------||
+# ||-----  fill 'planet below horizon' (invisible due to altitude) areas  -----||
+# ||-----------------------------  (shaded GREY)  -----------------------------||
 # ||---------------------------------------------------------------------------||
 
-    print("   .   .   .   .   .   .   .  fill grey 'planet below horizon' areas  .   .   .   .   .   .   .")
+    prnt("   .   .   .   .   .   .   .  fill grey 'planet below horizon' areas  .   .   .   .   .   .   .")
 
     if not config.PV_nsb:   # and not config.PV_nsdbh:
         rise_seg_done.sort()
         set_seg_done.sort()
         msgR = "   rise_seg_done {}".format(rise_seg_done)
         msg  = msgR + " "*(40-len(msgR)) + " set_seg_done {}".format(set_seg_done)
-        print(msg)
+        prnt(msg)
 
 #   >>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<
 #   >>>>>>     CODE TO FILL AREAS BELOW HORIZON     <<<<<<
@@ -2671,14 +2715,15 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         # Note: SET-to-RISE bands are stored as tuples in 'set_to_rise_pair'
         SRbands = 0     # count SET-to-RISE bands processed
 
-        for index,item in enumerate(SET_to_RISE_band):      # process multiple SET-to-RISE bands
+        # !! process multiple SET-to-RISE bands !!
+        for index,item in enumerate(SET_to_RISE_band):
             SRbands += 1
             set_segs, rise_segs = item
             msg0 = SET_to_RISE_band_txt[index]
             msg5 = ">process {} band".format(msg0)
 
             # print(">process SET-to-RISE band: SET seg {} & RISE seg {}".format(set_seg, rise_seg))
-            print(msg5)
+            prnt(msg5)
             tccdata += "\n" + msg5
 
             tex += fill_below_horizon(obj, set_segs, rise_segs)
@@ -2688,14 +2733,15 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         set_seg_done.sort()
         msgR = "   rise_seg_done {}".format(rise_seg_done)
         msg  = msgR + " "*(40-len(msgR)) + " set_seg_done {}".format(set_seg_done)
-        print(msg)
+        prnt(msg)
 
-        for index,item in enumerate(RISE_to_SET_band):      # process multiple RISE-to-SET bands
+        # !! process multiple RISE-to-SET bands !!
+        for index,item in enumerate(RISE_to_SET_band):
             rise_segs, set_segs = item
             msg1 = RISE_to_SET_band_txt[index]
             msg6 = ">process {} band".format(msg1)
             
-            print(msg6)
+            prnt(msg6)
             tccdata += "\n" + msg6
 
             # for segR in rise_segs:
@@ -2710,7 +2756,10 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         # ----------------------------------------- end of 'for'
 
 
-# .............. add   T E X T  /  A N N O T A T I O N ..............
+# .....................................................................
+# ..............  add   T E X T  /  A N N O T A T I O N  ..............
+# ..............         reserve "below horizon"         ..............
+# .....................................................................
 
         if SRbands > 0:
     #       reserve "below horizon" locations (DO NOT PRINT YET ... grey shading will overwrie it)
@@ -2770,9 +2819,10 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             # ----------------------------------------- end of 'for'
 
 
-# .............. add   T E X T  /  A N N O T A T I O N ..............
-
-#   "below horizon" for anywhere on the chart
+# .....................................................................
+# ..............  add   T E X T  /  A N N O T A T I O N  ..............
+# ..............  "below horizon" anywhere on the chart  ..............
+# .....................................................................
 
         # first print at the already selected label positions (stored already in 'below_horizon')
         for hr, idx in below_horizon:
@@ -2817,13 +2867,13 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         set_seg_done.sort()
         msgR = "   rise_seg_done {}".format(rise_seg_done)
         msg  = msgR + " "*(40-len(msgR)) + " set_seg_done {}".format(set_seg_done)
-        print(msg)
+        prnt(msg)
 
-# ||--------------------------------------------------------------------||
-# ||--------------------------------------------------------------------||
-# ||---- fill zones 'above horizon and between Civil Dawn and Dusk' ----||
-# ||--------------------------------------------------------------------||
-# ||--------------------------------------------------------------------||
+# ||----------------------------------------------------------------------||
+# ||----------------------------------------------------------------------||
+# ||----  fill zones 'above horizon and between Civil Dawn and Dusk'  ----||
+# ||---------------------------  (shaded GOLD)  --------------------------||
+# ||----------------------------------------------------------------------||
 
     rise_seg_done = []      # list of segments processed (emptied)
     set_seg_done = []       # list of segments processed (emptied)
@@ -2844,7 +2894,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         # ----------------------------------------- end of 'for'
     # ----------------------------------------- end of 'for'
 
-    print("   .   .   .   .   .   .   .   . fill gold 'dawn-to-dusk' areas .   .   .   .   .   .   .   .")
+    prnt("   .   .   .   .   .   .   .   . fill gold 'dawn-to-dusk' areas .   .   .   .   .   .   .   .")
 
 #   >>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<
 #   >>>>>>     CODE TO FILL AREAS ABOVE HORIZON     <<<<<<
@@ -2855,7 +2905,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         set_seg_done.sort()
         msgR = "   rise_seg_done {}".format(rise_seg_done)
         msg  = msgR + " "*(40-len(msgR)) + " set_seg_done {}".format(set_seg_done)
-        print(msg)
+        prnt(msg)
 
         msg6 = ''
         for index,item in enumerate(RISE_to_SET_band):      # process multiple RISE-to-SET bands
@@ -2863,7 +2913,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             msg1 = RISE_to_SET_band_txt2[index]
             msg6 += ">process {} band".format(msg1)
 
-            print(msg6)
+            prnt(msg6)
             tccdata += "\n" + msg6
             tex += fill_above_horizon(obj, rise_segs, set_segs)
             msg6 = "----------------------------------------\n"
@@ -2887,7 +2937,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             set_seg_done.sort()
             msgR = "   rise_seg_done {}".format(rise_seg_done)
             msg  = msgR + " "*(40-len(msgR)) + " set_seg_done {}".format(set_seg_done)
-            print(msg)
+            prnt(msg)
 
         # check for unprocessed SET segments
         Sseg = 0
@@ -2901,7 +2951,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                 nn += 1
 
                 msg6 += ">process SET segment {} {}".format(str(Sseg), str(SETep[Sseg]))
-                print(msg6)
+                prnt(msg6)
                 tccdata += "\n" + msg6
                 tex += fill_SET_above_horizon(obj, Sseg)
 
@@ -2914,7 +2964,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             set_seg_done.sort()
             msgR = "   rise_seg_done {}".format(rise_seg_done)
             msg  = msgR + " "*(40-len(msgR)) + " set_seg_done {}".format(set_seg_done)
-            print(msg)
+            prnt(msg)
 
         # check for unprocessed RISE segments
         Rseg = 0
@@ -2928,7 +2978,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
                 nn += 1
 
                 msg6 += ">process RISE segment {} {}".format(str(Rseg), str(RISEep[Rseg]))
-                print(msg6)
+                prnt(msg6)
                 tccdata += "\n" + msg6
                 tex += fill_RISE_above_horizon(obj, Rseg)
 
@@ -2937,7 +2987,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         # ----------------------------------------- end of 'while'
 
         if msg6 != '':
-            print(msg6[:-1])    # '\n' counts as one character
+            prnt(msg6[:-1])    # '\n' counts as one character
 
 # ........... final list of segments processed ...........
 
@@ -2946,11 +2996,13 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
             set_seg_done.sort()
             msgR = "   rise_seg_done {}".format(rise_seg_done)
             msg  = msgR + " "*(40-len(msgR)) + " set_seg_done {}".format(set_seg_done)
-            print(msg)
+            prnt(msg)
 
 
-# .............. add   T E X T  /  A N N O T A T I O N ..............
-#                      "above horizon with sun"
+# .....................................................................
+# ..............  add   T E X T  /  A N N O T A T I O N  ..............
+# ..............        "above horizon with sun"         ..............
+# .....................................................................
 
     if idx_preMP_max is not None:
         # xy0 = [idx_preMP_max/10*sf, (hr_preMP)*sf]      # print near hr_preMP
@@ -2962,8 +3014,10 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
         # tex += printlabelXY("above horizon with sun", xy0, ang_postMP, 'gray', False)
         tex += AHwS2(idx_postMP_max, hr_postMP, ang_postMP)
 
-# .............. add   T E X T  /  A N N O T A T I O N ..............
-#                       "© 2026 Andrew Bauer"
+# .....................................................................
+# ..............  add   T E X T  /  A N N O T A T I O N  ..............
+# ..............          "© 2026 Andrew Bauer"          ..............
+# .....................................................................
 
     txt = ''
     tex0 = ""
@@ -3406,8 +3460,10 @@ x0/10*sf, 0.1*sf)
         tex += r"""};"""
 
 
-# .............. add   T E X T  /  A N N O T A T I O N ..............
-#             "C I V I L   D U S K" / "C I V I L   D A W N"
+# .....................................................................
+# ..............  add   T E X T  /  A N N O T A T I O N  ..............
+# ..........  "C I V I L   D U S K" / "C I V I L   D A W N"  ..........
+# .....................................................................
 
     sbh = 6     # Sun Below Horizon (degrees)
     # !!! DO NOT put text in curly braces - it prints as if it was a single character !!!
@@ -3571,8 +3627,10 @@ plot[smooth,tension=0.5] coordinates{
     # plot Meridian Passage of planet
     tex += tex999
 
-# .............. add   T E X T  /  A N N O T A T I O N ..............
-#                   "<planet name>, Meridian Passage"
+# .....................................................................
+# ..............  add   T E X T  /  A N N O T A T I O N  ..............
+# ................  "<planet name>, Meridian Passage"  ................
+# .....................................................................
 
     # 'hdiags' is the offset the sun/planet name label is to be raised or
     # lowered (perpendicular to the direction of the text itself) in order
@@ -3977,7 +4035,7 @@ def Dline(fr, to, tx):      # tx = 'dawn' or 'dusk'
     return path
 
 # .........................................................................................
-#.............  fill grey SET-to-RISE bands (and handle RISE-to-SET bands)  ...............
+# ............  fill grey SET-to-RISE bands (and handle RISE-to-SET bands)  ...............
 # .........................................................................................
 
 def fill_below_horizon(obj, set_segs, rise_segs):
@@ -4049,7 +4107,7 @@ def fill_below_horizon(obj, set_segs, rise_segs):
         if r2s_band: m += ' ' * (70 - len(m)) + 'R2S_band'
         if s2r_band: m += ' ' * (70 - len(m)) + 'S2R_band'
 
-        print(m)
+        prnt(m)
 
         doSET = False
         if s2r_band and len(set_segs) == 1 and len(rise_segs) > 1:
@@ -4177,27 +4235,30 @@ def fill_below_horizon(obj, set_segs, rise_segs):
             txt = 'path:'
             n = p.find(',', 70)
             while n != -1:
-                print("      {}       {}".format(txt,p[:n+1]))
+                prnt("      {}       {}".format(txt,p[:n+1]))
                 tp.append("{} {}".format(txt,p[:n+1]))
                 txt = '     '
                 p = p[n+1:]
                 n = p.find(',', 70)
-            print("      {}       {}".format(txt,p))
+            prnt("      {}       {}".format(txt,p))
             tp.append("{} {}".format(txt,p))
 
             TEX += fillpath(path, 'LightSlateGrey', '0.9', tp)
             path = ''
 
-            # .............. add   T E X T  /  A N N O T A T I O N ..............
+            # .....................................................................
+            # ..............  add   T E X T  /  A N N O T A T I O N  ..............
+            # ..............         "<planet name> rise/set"        ..............
+            # .....................................................................
 
             #   "<planet name> rise"
-            print("      annotate rise seg %s ..... #01" %Rseg)
+            prnt("      annotate rise seg {} ..... #01".format(Rseg))
             tex8, txtXY = TA_rise(obj,Rseg)  # add text annotation
             TEX += tex8
 
             if Sseg is not None and Sseg in set_seg_done:
                 #   "<planet name> set"
-                print("      annotate set  seg %s ..... #02" %Sseg)
+                prnt("      annotate set  seg {} ..... #02".format(Sseg))
                 tex9, txtXY = TA_set(obj,Sseg)     # add text annotation
                 TEX += tex9
                 Sseg = None                     # set  segment processed & annotated
@@ -4438,39 +4499,42 @@ def fill_below_horizon(obj, set_segs, rise_segs):
             txt = 'path:'
             n = p.find(',', 70)
             while n != -1:
-                print("      {}       {}".format(txt,p[:n+1]))
+                prnt("      {}       {}".format(txt,p[:n+1]))
                 tp.append("{} {}".format(txt,p[:n+1]))
                 txt = '     '
                 p = p[n+1:]
                 n = p.find(',', 70)
-            print("      {}       {}".format(txt,p))
+            prnt("      {}       {}".format(txt,p))
             tp.append("{} {}".format(txt,p))
 
             TEX += fillpath(path, 'LightSlateGrey', '0.9', tp)
             path = ''
 
-            # .............. add   T E X T  /  A N N O T A T I O N ..............
+            # .....................................................................
+            # ..............  add   T E X T  /  A N N O T A T I O N  ..............
+            # ..............         "<planet name> rise/set"        ..............
+            # .....................................................................
 
             #   "<planet name> set"
-            print("      annotate set  seg %s ..... #03" %Sseg)
+            prnt("      annotate set  seg {} ..... #03".format(Sseg))
             tex9, txtXY = TA_set(obj,Sseg)     # add text annotation
             TEX += tex9
 
             if seg6 is not None:
                 #   "<planet name> set"
-                print("      annotate set  seg %s ..... #05" %seg6)
+                prnt("      annotate set  seg {} ..... #05".format(seg6))
                 tex9, txtXY = TA_set(obj,seg6)  # add text annotation
                 TEX += tex9
 
             if seg7 is not None:
                 #   "<planet name> rise"
-                print("      annotate rise seg %s ..... #05" %seg7)
+                prnt("      annotate rise seg {} ..... #05".format(seg7))
                 tex8, txtXY = TA_rise(obj,seg7)  # add text annotation
                 TEX += tex8
 
             if Rseg is not None and Rseg in rise_seg_done:
                 #   "<planet name> rise"
-                print("      annotate rise seg %s ..... #04" %Rseg)
+                prnt("      annotate rise seg {} ..... #04".format(Rseg))
                 tex8, txtXY = TA_rise(obj,Rseg)  # add text annotation
                 TEX += tex8
                 Rseg = None                     # rise segment processed & annotated
@@ -4478,7 +4542,7 @@ def fill_below_horizon(obj, set_segs, rise_segs):
         # This loops when there are SEPARATE shading areas within the same band, e.g. Mercury 62°-63°N 2000
     # ----------------------------------------- end of 'while'
 
-    if len(set_segs) > Sindex+1 or len(rise_segs) > Rindex+1:
+    if verbose and (len(set_segs) > Sindex+1 or len(rise_segs) > Rindex+1):
         print("ERROR: fill_below_horizon - not all segments processed in band\nset_segs: {}\nrise_segs: {}".format(set_segs,rise_segs));sys.exit(0)
 
     return TEX
@@ -4602,8 +4666,8 @@ def fill_above_horizon(obj, rise_segs, set_segs):
 
     if r2s_band: m += ' ' * (70 - len(m)) + 'R2S_band'
     if s2r_band: m += ' ' * (70 - len(m)) + 'S2R_band'
-    print(m)
-    print('      scan from {} {} to {} {}'.format(band_min,DOY(band_min),band_max,DOY(band_max)))
+    prnt(m)
+    prnt('      scan from {} {} to {} {}'.format(band_min,DOY(band_min),band_max,DOY(band_max)))
 
     if not r2s_band: return TEX     # here we only process r2s bands
 
@@ -4625,7 +4689,7 @@ def fill_above_horizon(obj, rise_segs, set_segs):
     while idx_fr < band_max:
         maxloops -=1
         if maxloops < 0: break
-        if maxloops < 2: print(msg7)
+        if maxloops < 2 and verbose: print(msg7)
 
         # process RISE segment(s) in a RISE-to-SET band
         path = ''       # new path to fill
@@ -4655,7 +4719,7 @@ def fill_above_horizon(obj, rise_segs, set_segs):
             ('24h', 'DBH'), ('24h', 'EoY')]:
                 print("ERROR: Add {} to RISE list types in R2S band".format(RISEep[Rseg])); sys.exit(0)
 
-            print("      >>> RISE {} for idx from {} to {}".format(Rseg,idx_fr,idx_to))
+            prnt("      >>> RISE {} for idx from {} to {}".format(Rseg,idx_fr,idx_to))
             # forward direction
             for idx in range(idx_fr, idx_to+1):
                 dawn = f_AM(civilY_AM[idx])
@@ -4669,7 +4733,7 @@ def fill_above_horizon(obj, rise_segs, set_segs):
                 # if tracing == 3 and objset_Y_idx < dawn < objrise_Y_idx:
                 if (objset_Y_idx is not None and tracing in [0, 3] and objset_Y_idx < dawn):
                     # tracing = 0 for Saturn 68°N 2020, Saturn 62°N 2045
-                    print("      !! HALT_FWD",idx,dwn,dsk,trace,objrise_Y_idx,"!!")
+                    prnt("      !! HALT_FWD",idx,dwn,dsk,trace,objrise_Y_idx,"!!")
                     halt_fwd = True         # Saturn 68°N 2020 (don't modify 'trace')
                     trace = -1              # Venus 71°N 2000
                     # idx_fr = idx - 1       # Jupiter 60°S 2010
@@ -4691,7 +4755,7 @@ def fill_above_horizon(obj, rise_segs, set_segs):
                         elif idx == DUSK_to and RISEep[Rseg][0] == '24h':
                             trace = 1       # trace RISE (Jupiter 71°N 2030)
                         else:
-                            print("      !! HALT_FWD",idx,dwn,dsk,trace,objrise_Y_idx,"!!!")
+                            prnt("      !! HALT_FWD",idx,dwn,dsk,trace,objrise_Y_idx,"!!!")
                             trace = -1    # trace neither RISE, DAWN nor DUSK
                             halt_fwd = True     # ESSENTIAL: Saturn 69°N 2020
 
@@ -4727,7 +4791,7 @@ def fill_above_horizon(obj, rise_segs, set_segs):
 
                 if config.PV_df:
                     PV_df += "{} {}, ".format(idx,trace)
-                    if len(PV_df) > 80: print(PV_df); PV_df = '>>> '
+                    if verboase and len(PV_df) > 80: print(PV_df); PV_df = '>>> '
 
                 if tracing == -1:
                     tracing = trace     # initialisation
@@ -4739,7 +4803,7 @@ def fill_above_horizon(obj, rise_segs, set_segs):
                 # -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
                 if trace != tracing or idx in [Rend,idx_to] or halt_fwd:
                     if len(PV_df) > 4:
-                        print(PV_df[:-2])
+                        prnt(PV_df[:-2])
                         PV_df = '>>> '
                     p = ''      # path element
                     ndx = idx if (idx in [idx_to,Rend] and trace == tracing) else idx-1
@@ -4747,7 +4811,8 @@ def fill_above_horizon(obj, rise_segs, set_segs):
                     if tracing == 0:            # end tracing 00h
                         to00 = idx              # Mercury 68°-70°N 2020
 #!#                        to00 = idx if idx == DAWN_fr else idx-1     # ???????
-                        if fr00 >= 0: print("      follow 00h from {} to {}".format(fr00,to00))
+                        if verbose and fr00 >= 0:
+                            print("      follow 00h from {} to {}".format(fr00,to00))
                         if fr00 >= 0: p += 'B'+ str(fr00) + ','; fr00 = -1      # Mars 66-71°N 2000
                         if to00 != fr00:
                             p += 'B'+ str(to00) + ','
@@ -4815,7 +4880,7 @@ def fill_above_horizon(obj, rise_segs, set_segs):
                             Rstart = rise_starts[Rseg]
                             Rend = rise_ends[Rseg]
                             rise_seg_done.append(Rseg)      # rise segment processed
-                            print("      next Rseg: ",Rseg," index",Rindex)
+                            prnt("      next Rseg:  {}  index {}".format(Rseg,Rindex))
                             break
                         n += 1
                     # ----------------------------------------- end of 'while'
@@ -4824,7 +4889,7 @@ def fill_above_horizon(obj, rise_segs, set_segs):
 ##            if tfr != -1: band_min = tfr        # Jupiter 60°S 2010, NOT for Mercury 67°N 2015
 
             if trace != -1 and idx >= idx_to: idx_fr = idx_to   # Venus 71°N 2000
-            print("      idx_fr",idx_fr,"tfr",tfr,"band_min",band_min)
+            prnt("      idx_fr {} tfr {} band_min {}".format(idx_fr,tfr,band_min))
             if halt_fwd: break  # quit the while loop
 
             # Mercury 69°N 2000, Mercury 71°N 2010
@@ -4867,7 +4932,7 @@ def fill_above_horizon(obj, rise_segs, set_segs):
             ('24h', '24h'), ('24h', 'DAH'), ('24h', 'DBH'), ('24h', 'EoY')]:
                 print("ERROR: Add {} to SET list types in R2S band".format(SETep[Sseg])); sys.exit(0)
 
-            print("      <<< SET {} for idx from {} to {}".format(Sseg,idx_fr,band_min))
+            prnt("      <<< SET {} for idx from {} to {}".format(Sseg,idx_fr,band_min))
             # reverse direction
             for idx in range(idx_fr, band_min-1, -1):
                 dawn = f_AM(civilY_AM[idx])
@@ -4918,7 +4983,7 @@ def fill_above_horizon(obj, rise_segs, set_segs):
                 # -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
                 if trace != tracing or idx in [Sstart,band_min]:
                     if len(PV_db) > 4:
-                        print(PV_db[:-2])
+                        prnt(PV_db[:-2])
                         PV_db = '<<< '
 
                     p = ''      # path element
@@ -4950,7 +5015,8 @@ def fill_above_horizon(obj, rise_segs, set_segs):
                         dsk_fr = -1
 
                     if not xx and tracing == 9:     # end tracing 24h
-                        if fr24 >= 0: print("      follow 24h from {} to {}".format(fr24,idx))
+                        if verbose and fr24 >= 0:
+                            print("      follow 24h from {} to {}".format(fr24,idx))
                         if fr24 >= 0: p += 'T'+ str(fr24) + ','; fr24 = -1
                         if idx != fr24: p += 'T'+ str(idx) + ','; to24 = idx
 
@@ -4979,7 +5045,7 @@ def fill_above_horizon(obj, rise_segs, set_segs):
                             Sstart = set_starts[Sseg]
                             Send = set_ends[Sseg]
                             set_seg_done.append(Sseg)       # set segment processed
-                            print("      next Sseg: ",Sseg," index",Sindex)
+                            prnt("      next Sseg:  {}  index {}".format(Sseg,Sindex))
                             break
                         n -= 1
                     # ----------------------------------------- end of 'while'
@@ -5002,12 +5068,12 @@ def fill_above_horizon(obj, rise_segs, set_segs):
         txt = 'path:'
         n = p.find(',', 70)
         while n != -1:
-            print("      {}       {}".format(txt,p[:n+1]))
+            prnt("      {}       {}".format(txt,p[:n+1]))
             tp.append("{} {}".format(txt,p[:n+1]))
             txt = '     '
             p = p[n+1:]
             n = p.find(',', 70)
-        print("      {}       {}".format(txt,p))
+        prnt("      {}       {}".format(txt,p))
         tp.append("{} {}".format(txt,p))
 
         TEX += fillpath(path, 'Gold', '0.85', tp)
@@ -5025,11 +5091,11 @@ def fill_above_horizon(obj, rise_segs, set_segs):
             if dwn or dsk:                                  # NEW2020
 ##            if dawn < objset_Y_idx:
                 idx_fr = idx                                # NEW2020
-                print("   continue with idx_fr",idx_fr)
+                prnt("   continue with idx_fr {}".format(idx_fr))
                 break
             if idx == noDUSK_fr and RISEep[Rseg][0] == '24h':  # Jupiter 71°N 2030
                 idx_fr = idx-1
-                print("   continue with idx_fr",idx_fr)
+                prnt("   continue with idx_fr {}".format(idx_fr))
                 break
             idx_fr = idx
         # ----------------------------------------- end of 'for'
@@ -5296,7 +5362,7 @@ def fill_SET_above_horizon(obj, Sseg):
             max_loops -= 1
             if max_loops < 0: break
 
-            print("      from {} = {} to {} = {}".format(tr_fr, DOY(tr_fr), tr_to, DOY(tr_to)))
+            prnt("      from {} = {} to {} = {}".format(tr_fr, DOY(tr_fr), tr_to, DOY(tr_to)))
             trace = tracing = -1    # not tracing anything
             tfr = -1        # tracing begins here
             n = 0           # count days during SET trace when above Dawn
@@ -5405,12 +5471,12 @@ def fill_SET_above_horizon(obj, Sseg):
             txt = 'path:'
             n = p.find(',', 70)
             while n != -1:
-                print("      {}       {}".format(txt,p[:n+1]))
+                prnt("      {}       {}".format(txt,p[:n+1]))
                 tp.append("{} {}".format(txt,p[:n+1]))
                 txt = '     '
                 p = p[n+1:]
                 n = p.find(',', 70)
-            print("      {}       {}".format(txt,p))
+            prnt("      {}       {}".format(txt,p))
             tp.append("{} {}".format(txt,p))
 
             TEX += fillpath(path, 'Gold', '0.85', tp)
@@ -5433,12 +5499,12 @@ def fill_SET_above_horizon(obj, Sseg):
         txt = 'path:'
         n = p.find(',', 70)
         while n != -1:
-            print("      {}       {}".format(txt,p[:n+1]))
+            prnt("      {}       {}".format(txt,p[:n+1]))
             tp.append("{} {}".format(txt,p[:n+1]))
             txt = '     '
             p = p[n+1:]
             n = p.find(',', 70)
-        print("      {}       {}".format(txt,p))
+        prnt("      {}       {}".format(txt,p))
         tp.append("{} {}".format(txt,p))
 
         TEX += fillpath(path, 'Gold', '0.85', tp)
@@ -5498,7 +5564,7 @@ def fill_SET_above_horizon(obj, Sseg):
                         xFR[trace] = idx
                     ndx = idx if idx == Send else idx-1
                     if len(PV_df) > 4:
-                        print(PV_df[:-2])
+                        prnt(PV_df[:-2])
                         PV_df = '>>> '
                     p = ''      # path element
 
@@ -5573,7 +5639,7 @@ def fill_SET_above_horizon(obj, Sseg):
                         xFR[trace] = idx
                     ndx = idx if idx == fill_fr else idx+1
                     if len(PV_db) > 4:
-                        print(PV_db[:-2])
+                        prnt(PV_db[:-2])
                         PV_db = '<<< '
                     p = ''      # path element
 
@@ -5606,12 +5672,12 @@ def fill_SET_above_horizon(obj, Sseg):
             txt = 'path:'
             n = p.find(',', 70)
             while n != -1:
-                print("      {}       {}".format(txt,p[:n+1]))
+                prnt("      {}       {}".format(txt,p[:n+1]))
                 tp.append("{} {}".format(txt,p[:n+1]))
                 txt = '     '
                 p = p[n+1:]
                 n = p.find(',', 70)
-            print("      {}       {}".format(txt,p))
+            prnt("      {}       {}".format(txt,p))
             tp.append("{} {}".format(txt,p))
 
             TEX += fillpath(path, 'Gold', '0.85', tp)
@@ -5846,7 +5912,7 @@ def fill_RISE_above_horizon(obj, Rseg):
             max_loops -= 1
             if max_loops < 0: break
 
-            print("      from {} = {} to {} = {}".format(tr_fr, DOY(tr_fr), tr_to, DOY(tr_to)))
+            prnt("      from {} = {} to {} = {}".format(tr_fr, DOY(tr_fr), tr_to, DOY(tr_to)))
             trace = tracing = -1    # not tracing anything
             tfr = -1        # tracing begins here
             n = 0           # count days during RISE trace when below Dusk
@@ -5951,12 +6017,12 @@ def fill_RISE_above_horizon(obj, Rseg):
             txt = 'path:'
             n = p.find(',', 70)
             while n != -1:
-                print("      {}       {}".format(txt,p[:n+1]))
+                prnt("      {}       {}".format(txt,p[:n+1]))
                 tp.append("{} {}".format(txt,p[:n+1]))
                 txt = '     '
                 p = p[n+1:]
                 n = p.find(',', 70)
-            print("      {}       {}".format(txt,p))
+            prnt("      {}       {}".format(txt,p))
             tp.append("{} {}".format(txt,p))
 
             TEX += fillpath(path, 'Gold', '0.85', tp)
@@ -5979,12 +6045,12 @@ def fill_RISE_above_horizon(obj, Rseg):
         txt = 'path:'
         n = p.find(',', 70)
         while n != -1:
-            print("      {}       {}".format(txt,p[:n+1]))
+            prnt("      {}       {}".format(txt,p[:n+1]))
             tp.append("{} {}".format(txt,p[:n+1]))
             txt = '     '
             p = p[n+1:]
             n = p.find(',', 70)
-        print("      {}       {}".format(txt,p))
+        prnt("      {}       {}".format(txt,p))
         tp.append("{} {}".format(txt,p))
 
         TEX += fillpath(path, 'Gold', '0.85', tp)
@@ -6047,7 +6113,7 @@ def fill_RISE_above_horizon(obj, Rseg):
                         xFR[trace] = idx
                     ndx = idx if idx == Rend else idx-1
                     if len(PV_df) > 4:
-                        print(PV_df[:-2])
+                        prnt(PV_df[:-2])
                         PV_df = '>>> '
                     p = ''      # path element
 
@@ -6136,7 +6202,7 @@ def fill_RISE_above_horizon(obj, Rseg):
                         xFR[trace] = idx
                     ndx = idx if idx == fill_fr else idx+1
                     if len(PV_db) > 4:
-                        print(PV_db[:-2])
+                        prnt(PV_db[:-2])
                         PV_db = '<<< '
                     p = ''      # path element
 
@@ -6172,12 +6238,12 @@ def fill_RISE_above_horizon(obj, Rseg):
             txt = 'path:'
             n = p.find(',', 70)
             while n != -1:
-                print("      {}       {}".format(txt,p[:n+1]))
+                prnt("      {}       {}".format(txt,p[:n+1]))
                 tp.append("{} {}".format(txt,p[:n+1]))
                 txt = '     '
                 p = p[n+1:]
                 n = p.find(',', 70)
-            print("      {}       {}".format(txt,p))
+            prnt("      {}       {}".format(txt,p))
             tp.append("{} {}".format(txt,p))
 
             TEX += fillpath(path, 'Gold', '0.85', tp)
@@ -6190,6 +6256,18 @@ def fill_RISE_above_horizon(obj, Rseg):
 
     return ''
 
+
+# def prnt_v0(txt):
+    # # print text only if '-v' (verbose) is specified in the command line
+    # # note that it only accepts ONE ARGUMENT
+    # if verbose: print(txt)
+    # return
+
+def prnt(*args, **kwargs):
+    # print text only if '-v' (verbose) is specified in the command line
+    if not verbose: return
+    print(*args, **kwargs)
+    return
 
 def beginRISEat24h(Rseg, i):
     # check if trace RISE start begins at 24h (check beforehand for noDUSK !!)
@@ -6760,230 +6838,6 @@ def set_belowMP(idx):
     if 24.0 > oset - mpas > 12.0: return True
     return False
 
-# Trace a LOWER 'planet above horizon' contour forwards (for gold shading)
-def LOWER_forw(idx, rise_seg, rise_ndx, c):
-# return the Y value of the 'above horizon and between dawn and dusk' contour going forwards (FORWARD pass)
-# Limitation: there can be two valid Y values whenever a SET and RISE are adjacent to DAH.
-#             To overcome this, the following loopbacks avoid calling LOWER_forw:
-#             - '00h forwards and SET backwards' below a RISE under MerPass (after DAH)
-#             - 'SET backwards and 00h forwards' below a RISE under MerPass (before DAH)
-# ... so this is only concerned with increasing idx values and no 'SET < RISE < MerPass' (???)
-# 'z' is for debugging
-
-    # define variables that LOWER_forw needs to remember...
-    global g_idx, g_c, g_Y, g_rise_seg
-    rise_EP0 = ''
-    if rise_seg is not None and rise_ndx is not None:
-        rise_EP0 = rise_ep[rise_seg][0]     # start of RISE seg
-        if g_Y is None:
-            # on first call, use RISE data to determine g_Y
-            xR,g_Y = getXY(objrise_XY_txt[rise_seg][rise_ndx])
-    if f_AM(g_Y) < 12.0: orise  = getY(objrise_Y[idx],0)
-    else:                orise  = getY(objrise_Y[idx],-1)
-
-    Y = z = None
-    #orise = getY(objrise_Y[idx])
-    oset  = getY(objset_Y[idx])
-    Oset  = f_PM(oset)              # 24.0 if oset == None
-    dawn  = f_AM(civilY_AM[idx])    #  0.0 if dawn == None
-    dusk  = f_PM(civilY_PM[idx])    # 24.0 if dusk == None
-    mpas  = meridian_pass[idx]
-
-    if rise_ndx is None:
-        if orise is not None and oset is not None:  # dawn = 0.0 if None (next line below)
-            # follow SET  backwards (Jupiter 2034; Mars 2020 60°S) ...
-            if orise > dawn > oset: c = 'S'; z = 1; Y = oset
-        if c == '' or c == 'D':
-            z = 2; Y = dawn
-            c = '-' if dawn == 0.0 else 'D'
-        elif (c == 'R' or c == '-'):
-            Y = dawn
-            if dawn == 0.0: c = '-'; z = 3
-            else:           c = 'D'; z = 4
-        if z is None:
-            print("ERROR LOWER_forw on {}: c={} rise_ndx = {} rise_seg {}".format(DOY(idx),c,rise_ndx,rise_seg))
-            sys.exit(0)
-        else:
-            # remember these variables...
-            g_idx = idx; g_c = c; g_Y = Y; g_rise_seg = rise_seg
-            return Y, c, z
-
-    # else:
-        # # there can be two RISE segments that match a date, e.g. Saturn 2047 64°N on May 20
-        # # therefore use rise_seg & rise_ndx if possible to get orise
-        # xR,orise = getXY(objrise_XY_txt[rise_seg][rise_ndx])
-
-    # print(DOY(idx),mpas,orise,oset)
-    if orise is None:
-        Y = dawn
-        c = 'D'; z = 10          # trace Civil DAWN
-    elif dawn == 0.0 or (rise_EP0 == '24h' and daystoprocess-1 != seglen_DUSK[0] -1 == idx):
-        # also permit last day of dusk (Mars 2048 64°N, Saturn 2046 65°N)
-        # ... exclude if RISE does not start from 24h (Saturn 2049 62°N)
-        # ... but only if NOdusk exists! (not Jupiter 2040 55°S - 60°N)
-        if rise_ndx is not None and (rise_ndx != 0 or (rise_ndx == 0 and (dah == [] \
-        or (dah != [] and (idx != dah_range[0].stop or idx > seglen_DAWN[0]))))):
-            # Venus 2023 65°N May 28 (rise 1 ndx 0 DAH Apr 23 to May 27) using 'idx > seglen_DAWN[0]'
-            c = 'R'; z = 11; Y = orise      # trace planet RISE
-        else:
-            # Venus 2023 64°N May 21 (rise 1 ndx 0 DAH Apr 29 to May 20) using 'and idx = dah_range[0].stop'
-            c = '-'; z = 12; Y = dawn       # follow 00h
-
-    # elif mpas < orise < Oset:   # INCORRECT - Mercury 2025 71°N
-        # Y = dawn
-        # c = 'D'; z = 1     # trace Civil DAWN
-    elif mpas >= orise and (c == 'R' or c == 'D' or c == ''):   # INCORRECT - Mercury 2025 71°N
-    # careful: mpas == orise if Mars 1994 67°N Jan 7
-    # elif c == 'R' or c == 'D' or c == '':
-        # print("{:.3f} {:.3f} {:.3f} ".format(orise,dawn,Oset))
-        # if   orise > Oset > dawn: c = 'D'; z = 4; Y = dawn   # follow DAWN forwards
-        # elif orise > dawn > Oset: c = 'S'; z = 5; Y = Oset   # follow SET  backwards
-        # if   Oset > dawn > orise: c = 'S'; z = 5; Y = Oset   # follow SET  backwards
-        # if   dawn > orise:        c = 'D'; z = 2; Y = dawn   # follow DAWN forwards
-        # elif orise > dawn:        c = 'R'; z = 3; Y = orise  # follow RISE forwards
-        if   Oset > dawn > orise or dawn > orise > f_AM(oset):
-            c = 'D'; z = 13; Y = dawn   # follow DAWN forwards
-        # elif Oset > orise > dawn or orise > dawn > f_AM(oset):
-        # 'orise >= dawn' required for Mars 2050 65°N on Mar 25 (idx = 84) ...
-        elif Oset > orise >= dawn or dusk > orise > dawn:      # or... Mars 2023 64.0N
-            c = 'R'; z = 14; Y = orise  # follow RISE forwards
-        elif dawn > Oset > orise:
-            c = 'S'; z = 15; Y = Oset   # follow SET  backwards
-    else:
-        doit = True if rise_seg is None else False      # this is very tricky and messy!
-        if c == '':
-            if rise_seg is not None:    # disable z=25 to follow Dawn if RISE crosses Civil Dawn
-                doit = False
-                if RISEcrossesDAWN[rise_seg]: doit = True   # Saturn 2006 60-58°S
-                if RISEcrossesDUSK[rise_seg]: doit = True   # Jupiter 2006 70-72°N
-            if rise_ep[rise_seg] == ('SoY', 'EoY') \
-            or rise_ep[rise_seg] == ('24h', 'EoY'): doit = True # Mars 2001 60°S - 63°N
-        elif c == 'R': doit = True          # continue tracing Rise once started
-            
-        #if   dawn > Oset > orise: c = 'S'; z = 26; Y = oset     # follow SET  backwards
-        #if   dusk > oset > orise: c = 'S'; Y = oset    # follow SET  backwards
-        if   Oset > dawn > orise: c = 'D'; z = 21; Y = dawn     # follow DAWN forwards
-        elif dawn > orise > Oset: c = 'D'; z = 22; Y = dawn     # follow DAWN forwards
-        elif dawn > orise:        c = 'R'; z = 23; Y = orise    # follow RISE forwards
-        elif dawn > orise > Oset: c = 'D'; z = 24; Y = dawn     # follow DAWN forwards
-
-        # !!! place any condition with DUSK at end of this list...
-        #elif dusk > orise > Oset: c = 'R'; z = 24; Y = orise    # OLD: follow RISE forwards (Saturn  2000 72.0°N)
-        #elif orise > Oset > dawn: c = 'D'; z = 25; Y = dawn     # OLD: follow DAWN forwards (Jupiter 2001 66.5°N)
-
-        elif dusk > orise > Oset and doit:
-            c = 'R'; z = 25; Y = orise    # follow RISE forwards (Saturn  2000 72.0°N)
-        elif orise > Oset > dawn:
-            c = 'D'; z = 26; Y = dawn     # follow DAWN forwards (Jupiter 2001 66.5°N)
-
-        elif orise > dusk > Oset: c = 'R'; z = 27; Y = oset     # follow RISE forwards Saturn 2035 69°N
-
-        if Y == 0.0: c = '-'; z = 29    # follow 00h border forwards
-
-    if z is None: c = ''    # don't continue with the old 'c'
-
-    # remember these variables...
-    g_idx = idx; g_c = c; g_Y = Y; g_rise_seg = rise_seg
-
-    return Y, c, z
-
-# Trace an UPPER 'planet above horizon' contour backwards (for gold shading)
-def UPPER_back(idx, set_seg, set_ndx, c):
-# return the Y value of the 'above horizon and between dawn and dusk' contour going backwards (BACKWARD pass)
-# Limitation: there can be two valid Y values whenever a SET and RISE are adjacent to DAH.
-#             To overcome this, the following loopbacks avoid calling UPPER_back:
-#             - '24h backwards and RISE forwards' above a SET above MerPass (before DAH)
-#             - 'SET forwards and 24h backwards'  above a SET above MerPass (after DAH)
-# ... so this is only concerned with decreasing idx values and no 'MerPass < SET < RISE' (???)
-# 'z' is for debugging
-
-    # define variables that UPPER_back needs to remember...
-    global g_idx, g_c, g_Y, g_ab_MP, g_set_seg
-    Y = z = ab_MP = None
-    if g_Y is None and set_seg is not None and set_ndx is not None:
-        # on first call, use SET data to determine g_Y (Saturn 2050 68°N)
-        ###print("    ",DOY(idx),set_seg,set_ndx)
-        xS,g_Y = getXY(objset_XY_txt[set_seg][set_ndx])
-    if f_PM(g_Y) < 12.0: oset  = getY(objset_Y[idx],0)
-    else:                oset  = getY(objset_Y[idx],-1)
-    orise = getY(objrise_Y[idx],-1)
-    Orise = f_AM(orise)             #  0.0 if orise == None
-    dusk  = f_PM(civilY_PM[idx])    # 24.0 if dusk  == None
-    dawn  = f_AM(civilY_AM[idx])    #  0.0 if dawn  == None
-    mpas  = meridian_pass[idx]
-    okay = True     # default if no two values to compare
-
-    if idx != daystoprocess-1:      # 'idx == daystoprocess-1': Jupiter 2026 60°S
-        # note: 'Y' cannot flip 00h/24h as the line segment terminates at both the upper and lower borders
-        if oset is not None:
-            ab_MP = math.copysign(1.0,oset-mpas)            #  +1 aboveMP;  -1 belowMP
-            # when ab_MP changes, usually the Meridian Passage has flipped 00h/24h
-        if g_idx is not None:
-            incr = idx - g_idx
-            # only compare with previous above/below MP value if its only 1 day away...
-            if ab_MP is not None and g_ab_MP is not None and abs(incr) == 1:
-                okay = True if ab_MP == g_ab_MP else False
-                if not okay:
-                    #print(mpas, meridian_pass[idx+1])
-                    if abs(mpas - meridian_pass[idx-incr]) > 23.0: okay = True     # MP has flipped (is okay)
-
-    if set_ndx is None:
-        if c == '' or c == 'D': z = 1; return dusk, 'D', z, okay
-        if (c == 'S' or c == '-'):
-            if dusk == 24.0: z = 2; return dusk, '-', z, okay
-            else:            z = 3; return dusk, 'D', z, okay
-        print("ERROR UPPER_back on {}: c={} set_ndx = {} set_seg {}".format(DOY(idx),c,set_ndx,set_seg))
-        sys.exit(0)
-
-    if oset is None and dusk != 24.0:       # Venus 2021 65°N VVV
-        Y = dusk
-        c = 'D'; z = 10          # trace Civil DUSK
-    elif dusk == 24.0:
-        #if (set_ndx is not None and set_ndx >= 0 and oset > mpas) and okay: # removed for Jupiter 2032 64-69°N
-        if (set_ndx is not None and set_ndx >= 0) and okay: # Venus 2021 65°N VVV
-            # 'or okay' for Jupiter 2020 62-68°N
-            # 'and okay' for Jupiter 2030 71°N
-            c = 'S'; z = 11; Y = oset      # trace planet SET
-        else:
-            c = '-'; z = 12; Y = dusk      # follow 24h
-
-    # if oset < meridian_pass[idx]: (Jupiter 2034 60°S)
-    # orise may be None (Venus 2025 62°N)
-    elif Orise < oset < mpas:
-        Y = dusk
-        c = 'D'; z = 13     # trace Civil DUSK
-    #    set_ndx < 0 within Mars 2025 60°S to 63°N
-    elif set_ndx < 0: c = 'D'; z = 14; Y = dusk
-    #elif oset > mpas and (c == 'S' or c == 'D' or c == ''):    # INCORRECT for Jupiter 2024 0°N
-    elif (c == 'S' or c == 'D' or c == '') and okay:
-        # c = 'S' if oset < dusk else 'D'
-        # Y = oset if oset < dusk else dusk
-        if   oset > dusk:  c = 'D'; z = 15; Y = dusk
-        else:              c = 'S'; z = 16; Y = oset    # follow SET  backwards (Jupiter 2023 60°S)
-    else:
-        # xxx = True if dawn == oset else False
-        # print("{:.3f} {:.3f} {:.3f} {}".format(Orise,dawn,oset,xxx))
-        # anything with DAWN has highest priority... (for Mars 2026 67°N to 71°N)
-        # !!! note: oset = dawn for Mars 2020 October 20 0°N with finals.all from 17.01.2024
-        if  Orise > oset >= dawn and okay:
-            c = 'S'; z = 20; Y = oset  # follow SET  backwards (Jupiter 2023 60°S)
-        #if   dusk > oset > orise: c = 'S'; Y = oset          # follow SET  backwards
-        elif oset > dusk > Orise: c = 'D'; z = 21; Y = dusk  # follow DUSK backwards
-        elif dusk > Orise > oset: c = 'D'; z = 22; Y = dusk  # follow DUSK backwards
-        elif dusk > oset:         c = 'S'; z = 23; Y = oset  # follow SET  backwards
-        elif Orise > oset > dusk: c = 'D'; z = 24; Y = dusk  # follow DUSK backwards (Mars 2026 >=66°N)
-        #elif Orise > dusk > oset: c = 'R'; z = 25; Y = orise # follow RISE forwards (Saturn 2032 67°N)
-
-        if Y == 24.0: c = '-'; z = 29  # follow 24h border backwards
-
-    if z is None: c = ''    # don't continue with 'c'
-
-    # remember these variables...
-    g_idx = idx; g_c = c; g_Y = Y; g_ab_MP = ab_MP; g_set_seg = set_seg
-
-    return Y, c, z, ab_MP
-
-
 def RISE_above_SET(idx, set_seg):
     RISEabvSET = False
     ndx = idx - set_offset[set_seg]
@@ -7026,8 +6880,11 @@ def SET_below_RISE(idx, rise_seg):
     # return None
 
 def TA_bhor_OLD(txtXY):
-# .............. add   T E X T  /  A N N O T A T I O N ..............
-#                for   'below horizon'
+    # .....................................................................
+    # ..............  add   T E X T  /  A N N O T A T I O N  ..............
+    # ..............             'below horizon'             ..............
+    # .....................................................................
+
     tex = ''
     # if (xmax - txtXY[0])/sf > 4 and (ymax - txtXY[1])/sf > 3:
         # x0 = txtXY[0] + (xmax*sf - txtXY[0])/2
@@ -7061,8 +6918,11 @@ def TA_bhor_OLD(txtXY):
 
 #def TA_rise(obj, rise_seg, objrise_Y, debug=False):
 def TA_rise(obj, rise_seg, debug=False):
-# .............. add   T E X T  /  A N N O T A T I O N ..............
-#                    '<planet name> rise'
+    # .....................................................................
+    # ..............  add   T E X T  /  A N N O T A T I O N  ..............
+    # ..............           '<planet name> rise'          ..............
+    # .....................................................................
+
     tex = ''; txtXY = None
     if rise_seg is None: return tex, txtXY
     # xRs = rise_offset[rise_seg]         # start RISE segment
@@ -7205,8 +7065,10 @@ def TA_rise(obj, rise_seg, debug=False):
 
 #def TA_set(obj, set_seg, objset_Y, debug=False):
 def TA_set(obj, set_seg, debug=False):
-# .............. add   T E X T  /  A N N O T A T I O N ..............
-#                    '<planet name> set'
+    # .....................................................................
+    # ..............  add   T E X T  /  A N N O T A T I O N  ..............
+    # ..............           '<planet name> set'           ..............
+    # .....................................................................
     tex = txtXY = ''; txtXY = None
     if set_seg is None: return tex, txtXY
     xSs = set_offset[set_seg]           # start SET segment
@@ -7352,9 +7214,12 @@ def TA_set(obj, set_seg, debug=False):
     return tex, txtXY
 
 def AHwS(idx_mid, n):       # 'Above Horizon with Sun'
-# .............. add   T E X T  /  A N N O T A T I O N ..............
-#                          'not visible'
-#                    'between dawn and dusk'
+    # .....................................................................
+    # ..............  add   T E X T  /  A N N O T A T I O N  ..............
+    # ..............              'not visible'              ..............
+    # ..............        '(between dawn and dusk)'        ..............
+    # .....................................................................
+
     # global meridian_pass
     hdiag = 0.27    # text shift perpendicular to text direction
     lab0, ang = text_position(meridian_pass, idx_mid, hdiag)
@@ -7371,10 +7236,13 @@ def AHwS(idx_mid, n):       # 'Above Horizon with Sun'
 
     return tex
 
-def AHwS2(idx_mid, hr_mid, ang):
-# .............. add   T E X T  /  A N N O T A T I O N ..............
-#                          'not visible'
-#                    '(between dawn and dusk)'
+def AHwS2(idx_mid, hr_mid, ang):    # 'Above Horizon with Sun'
+    # .....................................................................
+    # ..............  add   T E X T  /  A N N O T A T I O N  ..............
+    # ..............              'not visible'              ..............
+    # ..............        '(between dawn and dusk)'        ..............
+    # .....................................................................
+
     # global meridian_pass
     hdiag = 0.27    # text shift perpendicular to text direction
     #lab0, ang = text_position(meridian_pass, idx_mid, hdiag)
@@ -7896,8 +7764,11 @@ def LocalMeanTimeOfMeridianPassage(obj, object_name, object_XY_txt):
                 if (i+1) % 5 == 0: tex += "\n"
             tex += r"""};"""
 
-# # .............. add   T E X T  /  A N N O T A T I O N ..............
-# #                   "<planet name> Meridian Passage"
+    # # .....................................................................
+    # # ..............  add   T E X T  /  A N N O T A T I O N  ..............
+    # # ..............              'not visible'              ..............
+    # # ..............     "<planet name> Meridian Passage"    ..............
+    # # .....................................................................
     # prev_len = 0
     # for index, item in enumerate(object_XY_txt):
         # if len(item) > 45:      # if segment lenth > 45 days
