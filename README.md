@@ -1,20 +1,20 @@
-# SkyalmanacPP-Py3
+# SkyAlmanacPP-Py3
 
-SkyalmanacPP-Py3 is a Python 3 program to create the Planetary Phenomena data and charts that accompanies a Nautical Almanac. SkyalmanacPP-Py3 is a complimenary program to [Skyalmanac-Py3](https://github.com/aendie/SkyAlmanac-Py3).
+SkyAlmanacPP-Py3 is a Python 3 program to create the Planetary Phenomena data and charts that accompanies a Nautical Almanac. SkyAlmanacPP-Py3 is a complimenary program to [Skyalmanac-Py3](https://github.com/aendie/SkyAlmanac-Py3).
 
 **Brief History**
 
-SkyalmanacPP-Py3 began development in January 2023 and has since undergone many updates. I publish only well tested code... the Planetary Visibility Charts, although the charts were correct, required a complete re-write in 2026 that now includes an intermediate language to describe paths that form a perimeter to be shaded, thus providing a level of abstraction from the detailed path descriptions in the "TikZ" language.
+SkyAlmanacPP-Py3 began development in January 2023 and has since undergone many updates. I publish only well tested code... the Planetary Visibility Charts, although the charts were correct, required a complete re-write in 2026 that now includes an intermediate language to describe paths that form a perimeter to be shaded, thus providing a level of abstraction from the detailed path descriptions in the "TikZ" language.
 
 **Functionality**
 
-SkyalmanacPP (AKA "Planetary Phenomena") includes:
+SkyAlmanacPP (AKA "Planetary Phenomena") includes:
 
 * the **"DECLINATION OF SUN AND PLANETS"** chart
 
 * the **"Planet Diagram"** (see "Americal Practical Navigator" originally by Nathaniel Bowditch, L.L.D., Volume 1, 2017 Edition, page 256; also any "Astronomical Phenomena" or "Nautical Almanac" from USNO/HMNAO)
 
-* **"VISIBILITY OF PLANETS"** text (see any "Astronomical Phenomena" or "Nautical Almanac" from USNO/HMNAO) with one notable exception: I assume that the data listed in official almanacs is based on latitude 51.5°N, whereas SkyalmanacPP provides planet visibility text based on any latitude you choose (between 60°S and 72°N).
+* **"VISIBILITY OF PLANETS"** text (see any "Astronomical Phenomena" or "Nautical Almanac" from USNO/HMNAO) with one notable exception: I assume that the data listed in official almanacs is based on latitude 51.5°N, whereas SkyAlmanacPP provides planet visibility text based on any latitude you choose (between 60°S and 72°N).
 
 * **"VISIBILITY OF PLANETS IN MORNING AND EVENING TWILIGHT"** table (see any "Astronomical Phenomena" or "Nautical Almanac" from USNO/HMNAO) based on your chosen latitude.
 
@@ -75,7 +75,7 @@ Please read the following file (in the package): **PPchart usage notes.pdf**
 &emsp;... if already installed, check for upgrades explicitly:  
 &emsp;**pip install --upgrade skyfield scipy**  
 
-&emsp;Put the required files for SkyalmanacPP in a new folder, run Command Prompt in that folder and execute with:  
+&emsp;Put the required files for SkyAlmanacPP in a new folder, run Command Prompt in that folder and execute with:  
 &emsp;**py PPchart.py**
 
 ### INSTALLATION GUIDELINES on Ubuntu Desktop 19.10 or 20.04, 22.04, 24.04 or 26.04:
@@ -92,7 +92,7 @@ Please read the following file (in the package): **PPchart usage notes.pdf**
 &emsp;**pip3 install skyfield**  
 &emsp;**pip3 install scipy**  
 
-&emsp;Put the SkyalmanacPP files in a folder and execute with:  
+&emsp;Put the SkyAlmanacPP files in a folder and execute with:  
 &emsp;**python3 PPchart.py**  
 
 ### INSTALLATION GUIDELINES on Ubuntu Desktop 24.04:
@@ -100,7 +100,7 @@ Please read the following file (in the package): **PPchart usage notes.pdf**
 &emsp;Ubuntu 24.04 comes with Python 3.12 preinstalled, which requires use of a virtual environment.  
 &emsp;Please download the file **How to install Skyalmanac on Linux.pdf** for instructions.  
 &emsp;Installation of the PyPI package is described, which is simpler - no other files from GitHub are required.  
-&emsp;Please note that although the documentation refers to **Skyalmanac**, it also applies to **SkyalmanacPP**. Just substitute the correct distribution name.
+&emsp;Please note that although the documentation refers to **Skyalmanac**, it also applies to **SkyAlmanacPP**. Just substitute the correct distribution name.
 
 ### INSTALLATION GUIDELINES on Mac OS (old; unverified):
 
@@ -119,7 +119,7 @@ Please read the following file (in the package): **PPchart usage notes.pdf**
 
 &emsp;Install TeX/LaTeX from https://tug.org/mactex/
 
-&emsp;Now you are almost ready. Put the SkyalmanacPP files in any directory and start with:  
+&emsp;Now you are almost ready. Put the SkyAlmanacPP files in any directory and start with:  
 &emsp;**python PPchart**  
 &emsp;or  
 &emsp;**./PPchart**

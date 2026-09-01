@@ -188,7 +188,7 @@ if __name__ == '__main__':      # execute if this module explicitely run
         # print("Issue: https://github.com/skyfielders/python-skyfield/issues/1086")
         # sys.exit(0)
 
-    devuser = False     # enable added functionality for developers
+    devuser = True      # enable added functionality for developers
     obj = None
     allplanets = False
     latndx = 0; rtndx = 0; nmndx = 0
@@ -317,7 +317,7 @@ if __name__ == '__main__':      # execute if this module explicitely run
             print(" -pss ... plot sunrise/sunset & civil dusk/dawn at chosen latitude*")
             print(" -sbr ... use square brackets in Unix filenames")
             print(" -sp  ... execute in single-processing mode (slower)")
-            print(" * applies only to the Planet Diagram")
+            print("      * applies only to the Planet Diagram")
             print(" --------  Planet Visibility charts  --------")
             print(" -pv1 ..... for Mercury")
             print(" -pv2 ..... for Venus")

@@ -1659,7 +1659,7 @@ title_fs,(xmax+0.95)*sf,-0.82*sf,yearstr)
     RISE_to_SET_band_txt  = []      # save for Civil DAWN to DUSK zone: RISE-to-SET band
     RISE_to_SET_band_txt2 = []      # save for Civil DAWN to DUSK zone: RISE-to-SET band
     RISE_to_SET_band_size = []      # sum of all segment lengths
-    RISE_to_SET_band_size_d2d = []  # sum of all segment lengths between Civil Dawn & Dusk (for trace#80)
+    RISE_to_SET_band_size_d2d = []  # sum of all segment lengths between Civil Dawn & Dusk
     RISE_to_SET_band_Rdays = []     # number of days RISE is between Civil Dawn and Dusk
     RISE_to_SET_band_Sdays = []     # number of days SET  is between Civil Dawn and Dusk
     RISE_to_SET_band_range = []     # minimum and maximum date offsets as tuple per band
@@ -6367,21 +6367,21 @@ def check_dusk(cdd):
                 print("civil_dusk_done sequence ERROR at {}: ({})".format(caller.lineno,msg[-17:-1]))
                 sys.exit(0)
 
-def get_DAH_ab(DAH_zone):
-    return all_ab_RbDAH[DAH_zone], all_ab_SbDAH[DAH_zone], all_ab_RaDAH[DAH_zone], all_ab_SaDAH[DAH_zone]
+# def get_DAH_ab(DAH_zone):
+    # return all_ab_RbDAH[DAH_zone], all_ab_SbDAH[DAH_zone], all_ab_RaDAH[DAH_zone], all_ab_SaDAH[DAH_zone]
 
-def get_DAH_rs(DAH_zone):
-    return all_rise_segB[DAH_zone], all_set_segB[DAH_zone], all_rise_segA[DAH_zone], all_set_segA[DAH_zone]
+# def get_DAH_rs(DAH_zone):
+    # return all_rise_segB[DAH_zone], all_set_segB[DAH_zone], all_rise_segA[DAH_zone], all_set_segA[DAH_zone]
 
 def foverlap(start1, end1, start2, end2):
     # Does the float range (start1, end1) overlap with (start2, end2)?
     return end1 >= start2 and end2 >= start1
 
-def NEQ(a, b):
-    # return True if a == b == None
-    # return True if a != b
-    if a is None or b is None: return True
-    return a != b
+# def NEQ(a, b):
+    # # return True if a == None or b == None
+    # # return True if a != b
+    # if a is None or b is None: return True
+    # return a != b
 
 def mark_rise_seg_done(rise_seg):
     if rise_seg is None: return
@@ -6393,46 +6393,46 @@ def mark_set_seg_done(set_seg):
     if set_seg not in set_seg_done: set_seg_done.append(set_seg)
     return
 
-def civil_done(idx, civil_done):
-    done = False
-    for fr, to in civil_done:
-        if fr <= idx <= to: done = True
-    return done
+# def civil_done(idx, civil_done):
+    # done = False
+    # for fr, to in civil_done:
+        # if fr <= idx <= to: done = True
+    # return done
 
-def flush_AMbuf(cc, trace, tex0, seg, from_idx, to_idx):
-    if trace == 1:
-        code_cov.append('#{}-1'.format(cc))
-        tex = r"""
-% trace#{}-1 CIVIL DAWN from {} to {}""".format(cc,DOY(from_idx),DOY(to_idx))
-        tex += tex0 + r"""}"""
-    elif trace == 2:
-        code_cov.append('#{}-2'.format(cc))
-        tex = r"""
-% trace#{}-2 {} RISE seg {} from {} to {}""".format(cc,objn,seg,DOY(from_idx),DOY(to_idx))
-        tex += tex0 + r"""}"""
-    elif trace == 3:
-        code_cov.append('#{}-3'.format(cc))
-        tex = r"""
-% trace#{}-3 {} SET seg {} from {} to {}""".format(cc,objn,seg,DOY(from_idx),DOY(to_idx))
-        tex += tex0 + r"""}"""
-    else:
-        tex = r"""}"""
-    return tex
+# def flush_AMbuf(cc, trace, tex0, seg, from_idx, to_idx):
+    # if trace == 1:
+        # code_cov.append('#{}-1'.format(cc))
+        # tex = r"""
+# % trace#{}-1 CIVIL DAWN from {} to {}""".format(cc,DOY(from_idx),DOY(to_idx))
+        # tex += tex0 + r"""}"""
+    # elif trace == 2:
+        # code_cov.append('#{}-2'.format(cc))
+        # tex = r"""
+# % trace#{}-2 {} RISE seg {} from {} to {}""".format(cc,objn,seg,DOY(from_idx),DOY(to_idx))
+        # tex += tex0 + r"""}"""
+    # elif trace == 3:
+        # code_cov.append('#{}-3'.format(cc))
+        # tex = r"""
+# % trace#{}-3 {} SET seg {} from {} to {}""".format(cc,objn,seg,DOY(from_idx),DOY(to_idx))
+        # tex += tex0 + r"""}"""
+    # else:
+        # tex = r"""}"""
+    # return tex
 
-def flush_PMbuf(cc,trace, tex0, set_seg, from_idx, to_idx):
-    if trace == 1:
-        code_cov.append('#{}-1'.format(cc))
-        tex = r"""
-% trace#{}-1 CIVIL DUSK from {} to {}""".format(cc,DOY(from_idx),DOY(to_idx))
-        tex += tex0 + r"""}"""
-    elif trace == 2:
-        code_cov.append('#{}-2'.format(cc))
-        tex = r"""
-% trace#{}-2 {} SET seg {} from {} to {}""".format(cc,objn,set_seg,DOY(from_idx),DOY(to_idx))
-        tex += tex0 + r"""}"""
-    else:
-        tex = r"""}"""
-    return tex
+# def flush_PMbuf(cc,trace, tex0, set_seg, from_idx, to_idx):
+    # if trace == 1:
+        # code_cov.append('#{}-1'.format(cc))
+        # tex = r"""
+# % trace#{}-1 CIVIL DUSK from {} to {}""".format(cc,DOY(from_idx),DOY(to_idx))
+        # tex += tex0 + r"""}"""
+    # elif trace == 2:
+        # code_cov.append('#{}-2'.format(cc))
+        # tex = r"""
+# % trace#{}-2 {} SET seg {} from {} to {}""".format(cc,objn,set_seg,DOY(from_idx),DOY(to_idx))
+        # tex += tex0 + r"""}"""
+    # else:
+        # tex = r"""}"""
+    # return tex
 
 def get_DAH(dah):
     # store each DAH zone as a from-to range in a list
@@ -6541,19 +6541,19 @@ def get_seg(idx, seg_offset, condition=None, preferred_seg = None):
     # print("get_seg: ndx = {} {} seg = {}".format(ndx,txt,seg))
     return ndx, seg
 
-def SETseg24h(seg_PM_min, setseg_Ymax):
-# pick next SET segment that borders on 24h
-    seg_PM_max = len(setseg_Ymax)
-    for i in range(seg_PM_min, seg_PM_max):
-        if setseg_Ymax[i] > 23.9: return i
-    return seg_PM_max   # invalid segment number
+# def SETseg24h(seg_PM_min, setseg_Ymax):
+# # pick next SET segment that borders on 24h
+    # seg_PM_max = len(setseg_Ymax)
+    # for i in range(seg_PM_min, seg_PM_max):
+        # if setseg_Ymax[i] > 23.9: return i
+    # return seg_PM_max   # invalid segment number
 
-def RISEseg00h(seg_AM_min, riseseg_Ymin):
-# pick next RISE segment that borders on 00h
-    seg_AM_max = len(riseseg_Ymin)
-    for i in range(seg_AM_min, seg_AM_max):
-        if riseseg_Ymin[i] < 0.1: return i
-    return seg_AM_max   # invalid segment number
+# def RISEseg00h(seg_AM_min, riseseg_Ymin):
+# # pick next RISE segment that borders on 00h
+    # seg_AM_max = len(riseseg_Ymin)
+    # for i in range(seg_AM_min, seg_AM_max):
+        # if riseseg_Ymin[i] < 0.1: return i
+    # return seg_AM_max   # invalid segment number
 
 # def duskLTset(dusk,obj_SET):
     # objset = obj_SET
@@ -6805,58 +6805,58 @@ def seg_endpoints(seg_offset, dah, dbh, dahseg, dbhseg, dahoffset, dbhoffset, ri
 
     return endpoints, RS_flips
 
-def rise_aboveMP(idx):
-# return TRUE if object RISE is above MerPass, i.e. within 12 hours later (can cross date boundary)
-    orise = getY(objrise_Y[idx])
-    mpass = meridian_pass[idx]
-    if 0.0 < orise - mpass < 12.0: return True
-    #if mpass > orise:      # unnecessary :-)
-    if 24.0 > mpass - orise > 12.0: return True
-    return False
+# def rise_aboveMP(idx):
+# # return TRUE if object RISE is above MerPass, i.e. within 12 hours later (can cross date boundary)
+    # orise = getY(objrise_Y[idx])
+    # mpass = meridian_pass[idx]
+    # if 0.0 < orise - mpass < 12.0: return True
+    # #if mpass > orise:      # unnecessary :-)
+    # if 24.0 > mpass - orise > 12.0: return True
+    # return False
 
-def rise_belowMP(idx):
-# return TRUE if object RISE is below MerPass, i.e. within 12 hours earlier (can cross date boundary)
-    orise = getY(objrise_Y[idx])
-    mpass = meridian_pass[idx]
-    if 0.0 < mpass - orise < 12.0: return True
-    if 24.0 > orise - mpass > 12.0: return True
-    return False
+# def rise_belowMP(idx):
+# # return TRUE if object RISE is below MerPass, i.e. within 12 hours earlier (can cross date boundary)
+    # orise = getY(objrise_Y[idx])
+    # mpass = meridian_pass[idx]
+    # if 0.0 < mpass - orise < 12.0: return True
+    # if 24.0 > orise - mpass > 12.0: return True
+    # return False
 
-def set_aboveMP(idx):
-# return TRUE if object SET is below MerPass, i.e. within 12 hours earlier (can cross date boundary)
-    oset = getY(objset_Y[idx],-1)
-    mpas = meridian_pass[idx]
-    if 0.0 < oset - mpas < 12.0: return True
-    if 24.0 > mpas - oset > 12.0: return True
-    return False
+# def set_aboveMP(idx):
+# # return TRUE if object SET is below MerPass, i.e. within 12 hours earlier (can cross date boundary)
+    # oset = getY(objset_Y[idx],-1)
+    # mpas = meridian_pass[idx]
+    # if 0.0 < oset - mpas < 12.0: return True
+    # if 24.0 > mpas - oset > 12.0: return True
+    # return False
 
-def set_belowMP(idx):
-# return TRUE if object SET is below MerPass, i.e. within 12 hours earlier (can cross date boundary)
-    oset = getY(objset_Y[idx],-1)
-    mpas = meridian_pass[idx]
-    if 0.0 < mpas - oset < 12.0: return True
-    if 24.0 > oset - mpas > 12.0: return True
-    return False
+# def set_belowMP(idx):
+# # return TRUE if object SET is below MerPass, i.e. within 12 hours earlier (can cross date boundary)
+    # oset = getY(objset_Y[idx],-1)
+    # mpas = meridian_pass[idx]
+    # if 0.0 < mpas - oset < 12.0: return True
+    # if 24.0 > oset - mpas > 12.0: return True
+    # return False
 
-def RISE_above_SET(idx, set_seg):
-    RISEabvSET = False
-    ndx = idx - set_offset[set_seg]
-    if 0 <= ndx < len(objset_XY_txt[set_seg]):
-        xS,yS = getXY(objset_XY_txt[set_seg][ndx])
-        # return False if 'objrise_Y[idx]' is None
-        RISEabvSET = f_AM(getY(objrise_Y[idx], -1)) > yS
-        # check if last RISE spans 0 days (Mars 2032 60°S)
-        if rise_offset[-1] == daystoprocess-1: RISEabvSET = False
-    return RISEabvSET
+# def RISE_above_SET(idx, set_seg):
+    # RISEabvSET = False
+    # ndx = idx - set_offset[set_seg]
+    # if 0 <= ndx < len(objset_XY_txt[set_seg]):
+        # xS,yS = getXY(objset_XY_txt[set_seg][ndx])
+        # # return False if 'objrise_Y[idx]' is None
+        # RISEabvSET = f_AM(getY(objrise_Y[idx], -1)) > yS
+        # # check if last RISE spans 0 days (Mars 2032 60°S)
+        # if rise_offset[-1] == daystoprocess-1: RISEabvSET = False
+    # return RISEabvSET
     
-def SET_below_RISE(idx, rise_seg):
-    SETblwRISE = False
-    ndx = idx - rise_offset[rise_seg]
-    if 0 <= ndx < len(objrise_XY_txt[rise_seg]):
-        xR,yR = getXY(objrise_XY_txt[rise_seg][ndx])
-        SETblwRISE = f_PM(getY(objset_Y[idx])) < yR
-        # return False if 'objset_Y[idx]' is None
-    return SETblwRISE
+# def SET_below_RISE(idx, rise_seg):
+    # SETblwRISE = False
+    # ndx = idx - rise_offset[rise_seg]
+    # if 0 <= ndx < len(objrise_XY_txt[rise_seg]):
+        # xR,yR = getXY(objrise_XY_txt[rise_seg][ndx])
+        # SETblwRISE = f_PM(getY(objset_Y[idx])) < yR
+        # # return False if 'objset_Y[idx]' is None
+    # return SETblwRISE
 
 # OBSOLETE...
 # def get_returnSET(idx,rise_seg):
@@ -6879,42 +6879,42 @@ def SET_below_RISE(idx, rise_seg):
             # return set_seg
     # return None
 
-def TA_bhor_OLD(txtXY):
-    # .....................................................................
-    # ..............  add   T E X T  /  A N N O T A T I O N  ..............
-    # ..............             'below horizon'             ..............
-    # .....................................................................
+# def TA_bhor_OLD(txtXY):
+    # # .....................................................................
+    # # ..............  add   T E X T  /  A N N O T A T I O N  ..............
+    # # ..............             'below horizon'             ..............
+    # # .....................................................................
 
-    tex = ''
-    # if (xmax - txtXY[0])/sf > 4 and (ymax - txtXY[1])/sf > 3:
-        # x0 = txtXY[0] + (xmax*sf - txtXY[0])/2
-        # y0 = txtXY[1] + (ymax*sf - txtXY[1])/2
+    # tex = ''
+    # # if (xmax - txtXY[0])/sf > 4 and (ymax - txtXY[1])/sf > 3:
+        # # x0 = txtXY[0] + (xmax*sf - txtXY[0])/2
+        # # y0 = txtXY[1] + (ymax*sf - txtXY[1])/2
 
-    if txtXY is not None:
-        x0 = y0 = None
-        if 6 < xmax - txtXY[0]/sf < daysinyear/20 and 4 < txtXY[1]/sf < 12 and not isEoY:
-            # position in bottom right corner
-            x0 = (daysinyear-20)*sf/10
-            y0 = 2.0 * sf
-        elif 6 < xmax - txtXY[0]/sf < daysinyear/20 and 4 < ymax - txtXY[1]/sf < 12 and not fsEoY:
-            # position in top right corner
-            x0 = (daysinyear-20)*sf/10
-            y0 = 22.0 * sf
-        elif 6 < txtXY[0]/sf < daysinyear/20 and 4 < txtXY[1]/sf < 12 and not isSoY:
-            # position in bottom left corner
-            x0 = 20*sf/10
-            y0 = 2.0 * sf
-        elif 6 < txtXY[0]/sf < daysinyear/20 and 4 < ymax - txtXY[1]/sf < 12 and not fsSoY:
-            # position in top left corner
-            x0 = 20*sf/10
-            y0 = 22.0 * sf
-        if x0 is not None:
-            xy0 = [x0, y0 + 0.35*sf]
-            xy1 = [x0, y0 - 0.35*sf]
-            tex += printlabelXY("below", xy0, 0.0, 'white', False)
-            tex += printlabelXY("horizon", xy1, 0.0, 'white', False)
+    # if txtXY is not None:
+        # x0 = y0 = None
+        # if 6 < xmax - txtXY[0]/sf < daysinyear/20 and 4 < txtXY[1]/sf < 12 and not isEoY:
+            # # position in bottom right corner
+            # x0 = (daysinyear-20)*sf/10
+            # y0 = 2.0 * sf
+        # elif 6 < xmax - txtXY[0]/sf < daysinyear/20 and 4 < ymax - txtXY[1]/sf < 12 and not fsEoY:
+            # # position in top right corner
+            # x0 = (daysinyear-20)*sf/10
+            # y0 = 22.0 * sf
+        # elif 6 < txtXY[0]/sf < daysinyear/20 and 4 < txtXY[1]/sf < 12 and not isSoY:
+            # # position in bottom left corner
+            # x0 = 20*sf/10
+            # y0 = 2.0 * sf
+        # elif 6 < txtXY[0]/sf < daysinyear/20 and 4 < ymax - txtXY[1]/sf < 12 and not fsSoY:
+            # # position in top left corner
+            # x0 = 20*sf/10
+            # y0 = 22.0 * sf
+        # if x0 is not None:
+            # xy0 = [x0, y0 + 0.35*sf]
+            # xy1 = [x0, y0 - 0.35*sf]
+            # tex += printlabelXY("below", xy0, 0.0, 'white', False)
+            # tex += printlabelXY("horizon", xy1, 0.0, 'white', False)
             
-    return tex
+    # return tex
 
 #def TA_rise(obj, rise_seg, objrise_Y, debug=False):
 def TA_rise(obj, rise_seg, debug=False):
@@ -7213,28 +7213,28 @@ def TA_set(obj, set_seg, debug=False):
 
     return tex, txtXY
 
-def AHwS(idx_mid, n):       # 'Above Horizon with Sun'
-    # .....................................................................
-    # ..............  add   T E X T  /  A N N O T A T I O N  ..............
-    # ..............              'not visible'              ..............
-    # ..............        '(between dawn and dusk)'        ..............
-    # .....................................................................
+# def AHwS(idx_mid, n):       # 'Above Horizon with Sun'
+    # # .....................................................................
+    # # ..............  add   T E X T  /  A N N O T A T I O N  ..............
+    # # ..............              'not visible'              ..............
+    # # ..............        '(between dawn and dusk)'        ..............
+    # # .....................................................................
 
-    # global meridian_pass
-    hdiag = 0.27    # text shift perpendicular to text direction
-    lab0, ang = text_position(meridian_pass, idx_mid, hdiag)
-    xoffset = hdiag*math.sin(-ang)
-    yoffset = hdiag*math.cos(-ang)
-    x0 = idx_mid/10 + xoffset
-    y0 = meridian_pass[idx_mid] + n + yoffset
-    xy0 = [x0*sf, y0*sf]
-    x1 = idx_mid/10 - xoffset
-    y1 = meridian_pass[idx_mid] + n - yoffset
-    xy1 = [x1*sf, y1*sf]
-    tex  = printlabelXY("not visible", xy0, ang, 'gray', False)
-    tex += printlabelXY("(between dawn and dusk)", xy1, ang, 'gray', False)
+    # # global meridian_pass
+    # hdiag = 0.27    # text shift perpendicular to text direction
+    # lab0, ang = text_position(meridian_pass, idx_mid, hdiag)
+    # xoffset = hdiag*math.sin(-ang)
+    # yoffset = hdiag*math.cos(-ang)
+    # x0 = idx_mid/10 + xoffset
+    # y0 = meridian_pass[idx_mid] + n + yoffset
+    # xy0 = [x0*sf, y0*sf]
+    # x1 = idx_mid/10 - xoffset
+    # y1 = meridian_pass[idx_mid] + n - yoffset
+    # xy1 = [x1*sf, y1*sf]
+    # tex  = printlabelXY("not visible", xy0, ang, 'gray', False)
+    # tex += printlabelXY("(between dawn and dusk)", xy1, ang, 'gray', False)
 
-    return tex
+    # return tex
 
 def AHwS2(idx_mid, hr_mid, ang):    # 'Above Horizon with Sun'
     # .....................................................................
@@ -7377,28 +7377,28 @@ def vis_per_day(dbh, verticals):
     vis_frto = hrAMfr, hrAMto, hrPMfr, hrPMto
     return vis_stat, vis_frto
 
-def trim_SET(objset_XY_txt, objset_Y, set_offset):
-# these special cases need to be trimmed - otherwise they are handled incorrectly...
+# def trim_SET(objset_XY_txt, objset_Y, set_offset):
+# # these special cases need to be trimmed - otherwise they are handled incorrectly...
 
-# trim former of double SET event at SOY (Jan 1) near 00h if none on Jan 2
-#    e.g. SOY 2027 00:00
-    if len(set_offset) > 1:
-        if set_offset[:2] == [0, 0] and len(objset_XY_txt[0]) == 1:
-            set_offset = set_offset[1:]
-            objset_Y = [objset_Y[0][1]] + objset_Y[1:]
-            newobjset_XY_txt = objset_XY_txt[1:]
-            return (newobjset_XY_txt, objset_Y, set_offset)
+# # trim former of double SET event at SOY (Jan 1) near 00h if none on Jan 2
+# #    e.g. SOY 2027 00:00
+    # if len(set_offset) > 1:
+        # if set_offset[:2] == [0, 0] and len(objset_XY_txt[0]) == 1:
+            # set_offset = set_offset[1:]
+            # objset_Y = [objset_Y[0][1]] + objset_Y[1:]
+            # newobjset_XY_txt = objset_XY_txt[1:]
+            # return (newobjset_XY_txt, objset_Y, set_offset)
 
-# trim latter of double SET events at EOY near 24h (Jan 1)
-#    e.g. EOY 2026 24:00
-    if len(set_offset) == 2:
-        if set_offset[1] == 365 and len(objset_XY_txt[1]) == 1:
-            set_offset = set_offset[:1]
-            objset_Y = objset_Y[:-1] + [objset_Y[-1][0]]
-            newobjset_XY_txt = objset_XY_txt[:-1]
-            return (newobjset_XY_txt, objset_Y, set_offset)
+# # trim latter of double SET events at EOY near 24h (Jan 1)
+# #    e.g. EOY 2026 24:00
+    # if len(set_offset) == 2:
+        # if set_offset[1] == 365 and len(objset_XY_txt[1]) == 1:
+            # set_offset = set_offset[:1]
+            # objset_Y = objset_Y[:-1] + [objset_Y[-1][0]]
+            # newobjset_XY_txt = objset_XY_txt[:-1]
+            # return (newobjset_XY_txt, objset_Y, set_offset)
 
-    return None
+    # return None
 
 def DOY(idx):
 # format day of year like 'Jan 1'
@@ -7413,65 +7413,65 @@ def DOY(idx):
     dt = d00 + timedelta(days=idx)
     return "{dt:%b} {dt.day}".format(dt=dt)
 
-def aboveHor(lmt, tuphor):
-# return True if the object's LocalMeanTime (lmt) is above the horizon
-    for fr, to in tuphor:
-        if fr < lmt < to: return True
-    return False
+# def aboveHor(lmt, tuphor):
+# # return True if the object's LocalMeanTime (lmt) is above the horizon
+    # for fr, to in tuphor:
+        # if fr < lmt < to: return True
+    # return False
 
-def get_Jan1_alt(dbh, objrise_Y, objset_Y):
-# build a list of 'from-to' tuples in ascending order with 
-#    Local Mean Time on Jan 1 when object is above horizon.
+# def get_Jan1_alt(dbh, objrise_Y, objset_Y):
+# # build a list of 'from-to' tuples in ascending order with 
+# #    Local Mean Time on Jan 1 when object is above horizon.
 
-    if 0 in dbh: return []
+    # if 0 in dbh: return []
 
-    Jan1rise_Y = objrise_Y[0]
-    Jan1set_Y  = objset_Y[0]
-    rise_Y = Jan1rise_Y if type(Jan1rise_Y) is list else [Jan1rise_Y]
-    set_Y  = Jan1set_Y  if type(Jan1set_Y)  is list else [Jan1set_Y]
-    # now they're both lists
-    i = r = s = 0
-    hor = []
-    # print("rise_Y",rise_Y)
-    # print("set_Y ",set_Y)
-    while s < len(set_Y) or r < len(rise_Y):
-        if s < len(set_Y) and r < len(rise_Y):
-            if set_Y[s] < rise_Y[r]:
-                hor.append((0.0, set_Y[s]))
-                s += 1
-            else:
-                hor.append((rise_Y[r], set_Y[s]))
-                s += 1
-                r += 1
-        elif r < len(rise_Y):
-            hor.append((rise_Y[r], 24.0))
-            r += 1
-        elif s < len(set_Y):
-            hor.append((0.0, set_Y[s]))
-            s += 1
-    return hor
+    # Jan1rise_Y = objrise_Y[0]
+    # Jan1set_Y  = objset_Y[0]
+    # rise_Y = Jan1rise_Y if type(Jan1rise_Y) is list else [Jan1rise_Y]
+    # set_Y  = Jan1set_Y  if type(Jan1set_Y)  is list else [Jan1set_Y]
+    # # now they're both lists
+    # i = r = s = 0
+    # hor = []
+    # # print("rise_Y",rise_Y)
+    # # print("set_Y ",set_Y)
+    # while s < len(set_Y) or r < len(rise_Y):
+        # if s < len(set_Y) and r < len(rise_Y):
+            # if set_Y[s] < rise_Y[r]:
+                # hor.append((0.0, set_Y[s]))
+                # s += 1
+            # else:
+                # hor.append((rise_Y[r], set_Y[s]))
+                # s += 1
+                # r += 1
+        # elif r < len(rise_Y):
+            # hor.append((rise_Y[r], 24.0))
+            # r += 1
+        # elif s < len(set_Y):
+            # hor.append((0.0, set_Y[s]))
+            # s += 1
+    # return hor
 
-def Y00h(XY_txt, pick=-1):  # default is END of segment
-# return precise X coordinate when START/END of curve crosses 00h
-#   START:  pick = 0    END:    pick = -1
-    x1, y1 = tikzXY(XY_txt[pick])
-    if len(XY_txt) >= 2:
-        n = 1 if pick == 0 else -2
-        x2, y2 = tikzXY(XY_txt[n])
-        return x2 + (y2 * (x1- x2) / (y2 - y1))
-    else:
-        return x1
+# def Y00h(XY_txt, pick=-1):  # default is END of segment
+# # return precise X coordinate when START/END of curve crosses 00h
+# #   START:  pick = 0    END:    pick = -1
+    # x1, y1 = tikzXY(XY_txt[pick])
+    # if len(XY_txt) >= 2:
+        # n = 1 if pick == 0 else -2
+        # x2, y2 = tikzXY(XY_txt[n])
+        # return x2 + (y2 * (x1- x2) / (y2 - y1))
+    # else:
+        # return x1
 
-def Y24h(XY_txt, ymax, pick=0):     # default is START of segment
-# return precise X coordinate when START/END of curve crosses 24h
-#   START:  pick = 0    END:  pick = -1
-    x1, y1 = tikzXY(XY_txt[pick])
-    if len(XY_txt) >= 2:
-        n = 1 if pick == 0 else -2
-        x2, y2 = tikzXY(XY_txt[n])
-        return x2 - ((ymax - y2) * (x2- x1) / (y1 - y2))
-    else:
-        return x1
+# def Y24h(XY_txt, ymax, pick=0):     # default is START of segment
+# # return precise X coordinate when START/END of curve crosses 24h
+# #   START:  pick = 0    END:  pick = -1
+    # x1, y1 = tikzXY(XY_txt[pick])
+    # if len(XY_txt) >= 2:
+        # n = 1 if pick == 0 else -2
+        # x2, y2 = tikzXY(XY_txt[n])
+        # return x2 - ((ymax - y2) * (x2- x1) / (y1 - y2))
+    # else:
+        # return x1
 
 def getXY(coord):               # return unscaled (comparable) chart values
     x, y = tikzXY(coord)
@@ -7886,53 +7886,6 @@ def LocalMeanTimeOfLowerTransit():
 
     return lst_lowertransit, alt_lowertransit
 
-def LocalMeanTimeOfLowerTransit_OLD():
-# Simplified calculation of lower transit ...
-#   (which is good enough for text annotation purposes)
-#   (useful for assessing best text annotation location)
-
-    # lower_transit = []
-    tup_lowertransit = []
-    lst_lowertransit = [[] for i in range(24)]
-    hr = None
-
-    for index, item in enumerate(meridian_pass):
-        y = (item + 12.5) % 24
-        # lower_transit.append(y)
-        # if hr == None: hr = int(y)
-        # if (hr < 24 and y < hr) or (hr == 0 and y > 23):
-            # tup_lowertransit.append((hr,index))
-            # hr -= 1
-            # if hr < 0: hr = 23
-        hr = int(y)
-        tup_lowertransit.append((hr,index))
-
-    # gather all 'idx' date offsets that are within 0.5h of the lower meridian transit hour
-    # print(tup_lowertransit)
-    for hr, idx in tup_lowertransit:
-        lst_lowertransit[hr].append(idx)
-    # print(lst_lowertransit)
-
-    if False:       # for debugging only...
-        for hr in range(24):
-            txt0 = "lst_lowertransit for hour {:02d}: ".format(hr)
-            prev_idx = None
-            done = False
-            for index, idx in enumerate(lst_lowertransit[hr]):
-                if prev_idx is None:
-                    print("{}{} ".format(txt0,DOY(idx)),end = '')
-                    done = True
-                elif abs(idx - prev_idx) != 1:
-                    print("to {}, {} ".format(DOY(prev_idx),DOY(idx)),end='')
-                    done = True
-                prev_idx = idx
-                if index == len(lst_lowertransit[hr]) - 1:
-                    print("to {}.".format(DOY(idx)),end='')
-                    done = True
-            if done: print()
-
-    return lst_lowertransit
-
 def hr_beforeMP(idx, hr_mp, hr_dawn, objrise_Y):
 # determine which line borders the gold zone below the MerPass
     hr_rise = f_AM(getY(objrise_Y[idx]))
@@ -8032,102 +7985,6 @@ def Planet_Sun_Zone(dbh, verticals):
 
     return hr_preMP, hr_postMP, idx_preMP_max, idx_postMP_max, ang_preMP, ang_postMP
 
-def Planet_Sun_Zone_OLD(dbh, objrise_Y, objset_Y):
-# for sun_preMP and sun_postMP:  gather dates midway between ...
-#       "Meridian Passage and planet Rise or DAWN/DUSK (whichever is closer)"
-#     & "Meridian Passage and planet Set  or DAWN/DUSK (whichever is closer)"
-#   when crossing hour boundaries per day in year.
-#   (useful for assessing best text annotation location)
-
-# Leave a boundary of ... (less than this is unusable for text positioning):
-#         16 days from left/right border
-#         1 hour from DAWN/DUSK or RISE/SET (whichever is closer) ???????????????????
-
-    tup_pre = []
-    tup_post = []
-    sun_preMP  = [[] for i in range(24)]
-    sun_postMP = [[] for i in range(24)]
-    idx = 25        # 26th Jan
-    hr_pre = hr_post = None
-
-    while idx <= daystoprocess-27:
-        hr_mp = meridian_pass[idx]
-        hr_rise = getY(objrise_Y[idx])
-        hr_set  = getY(objset_Y[idx],-1)
-        hr_dusk = f_PM(civilY_PM[idx])
-        hr_dawn = f_AM(civilY_AM[idx])
-        # skip if planet meridian not between dawn & dusk
-        if not (hr_dawn < hr_mp < hr_dusk): idx += 1; continue
-        # skip if planet never above horizon...
-        if (hr_rise is None or hr_set is None) and idx in dbh: idx += 1; continue
-        hr_lo, lim_beforeMP = hr_beforeMP(idx, hr_mp, hr_dawn, objrise_Y)
-        hr_hi, lim_afterMP  = hr_afterMP(idx, hr_mp, hr_dusk, objset_Y)
-        if hr_lo is not None:
-            hr_pre_wdth = hr_mp - hr_lo
-            hr_pre_mp   = hr_mp - (hr_pre_wdth/2)
-            if hr_pre  is None: hr_pre  = int(hr_pre_mp)
-            if (hr_pre < 24 and hr_pre_mp < hr_pre) or (hr_pre == 0 and hr_pre_mp > 23):
-                tup_pre.append((hr_pre,idx,hr_pre_wdth))
-                hr_pre -= 1
-                if hr_pre < 0: hr_pre = 23
-        if hr_hi is not None:
-            hr_post_wdth = hr_hi - hr_mp
-            hr_post_mp   = hr_mp + (hr_post_wdth/2)
-            if hr_post is None: hr_post = int(hr_post_mp+0.5)   # round up
-            if (hr_post < 24 and hr_post_mp < hr_post) or (hr_post == 0 and hr_post_mp > 23):
-                tup_post.append((hr_post,idx,hr_post_wdth))
-                hr_post -= 1
-                if hr_post < 0: hr_post = 23
-
-        idx += 1
-
-    # standard value for 'hdiag' here...
-    hdiag = 1.2*3     # height (in 1/10 hour) perpendiculat to label text
-    ab = 0      # print above
-
-    hr_pre_wdth_max = 0.0
-    idx_preMP_max = None
-    ang_preMP = None
-    hr_preMP = None
-    for hr, idx, hr_wdth in tup_pre:
-        sun_preMP[hr].append(idx)
-        if hr_wdth > hr_pre_wdth_max:
-            idx_preMP_max = idx
-            hr_preMP = hr
-            hr_pre_wdth_max = hr_wdth
-    if idx_preMP_max is not None:     # obtain 'ang' angle at Meridian Passage
-        txtXY, ang_preMP = text_position(meridian_pass, idx_preMP_max, hdiag*vab[ab])
-
-    hr_post_wdth_max = 0.0
-    idx_postMP_max = None
-    ang_postMP = None
-    hr_postMP = None
-    for hr, idx, hr_wdth in tup_post:
-        sun_postMP[hr].append(idx)
-        if hr_wdth > hr_post_wdth_max:
-            idx_postMP_max = idx
-            hr_postMP = hr
-            hr_post_wdth_max = hr_wdth
-    if idx_postMP_max is not None:    # obtain 'ang' angle at Meridian Passage
-        txtXY, ang_postMP = text_position(meridian_pass, idx_postMP_max, hdiag*vab[ab])
-
-    if True:       # for debugging only...
-        for hr in range(24):
-            txt0 = "sun_preMP at {:02d}h: ".format(hr)
-            for idx in sun_preMP[hr]:
-                print("{}{} ".format(txt0,DOY(idx)),end = '')
-                if idx == idx_preMP_max: print(" <-- max width",end = '')
-                print()
-        for hr in range(24):
-            txt0 = "sun_postMP at {:02d}h: ".format(hr)
-            for idx in sun_postMP[hr]:
-                print("{}{} ".format(txt0,DOY(idx)),end = '')
-                if idx == idx_postMP_max: print(" <-- max width",end = '')
-                print()
-
-    # return sun_preMP, sun_postMP
-    return hr_preMP, hr_postMP, idx_preMP_max, idx_postMP_max, ang_preMP, ang_postMP
-
 def Planet_Vis_Zone(verticals, vis_frto):
 # per AM/PM: find date with highest vertical gap midway between ...
 #       "planet visibility begin"
@@ -8181,60 +8038,6 @@ def Planet_Vis_Zone(verticals, vis_frto):
     return idx_hrAM, hrAM, idx_hrPM, hrPM
 
 
-def Planet_Vis_Zone_OLD(objrise_Y, objset_Y, civilY_AM, civilY_PM):
-# for vis_preMP and vis_postMP:  gather dates midway between ...
-#       "planet Rise and Meridian Passage" & "Meridian Passage and planet Set"
-#   when crossing hour boundaries per day in year.
-#   (useful for assessing best text annotation location)
-
-# Leave a boundary of ... (less than this is unusable for text positioning):
-#         16 days from left/right border 
-#         1 hour from dawn/dusk
-
-# similarly for sun_preMP and sun_postMP:  except this time within the gold
-#   'between dawn and dusk' zone
-
-    tup_pre = []
-    tup_post = []
-    vis_preMP  = [[] for i in range(24)]
-    vis_postMP = [[] for i in range(24)]
-    idx = 15        # 16th Jan
-    hr_pre = hr_post = None
-
-    while idx <= daystoprocess-17:
-        hr_mp = meridian_pass[idx]
-        hr_rise = getY(objrise_Y[idx])
-        hr_set  = getY(objset_Y[idx])
-        hr_dusk = f_PM(civilY_PM[idx]) + 1.0
-        hr_dawn = f_AM(civilY_AM[idx]) - 1.0
-        if hr_rise is None or hr_set is None: idx += 1; continue
-        hr_pre_mp  = hr_norm(hr_mp - (hr_norm(hr_mp - hr_rise))/2)
-        hr_post_mp = hr_norm(hr_mp + (hr_norm(hr_set - hr_mp))/2)
-        if hr_pre  is None: hr_pre  = int(hr_pre_mp)
-        if hr_post is None: hr_post = int(hr_post_mp+0.5)   # round up
-        if (hr_pre < 24 and hr_pre_mp < hr_pre) or (hr_pre == 0 and hr_pre_mp > 23):
-            if not hr_dawn < hr_pre < hr_dusk: # not when sun is up
-                tup_pre.append((hr_pre,idx))
-            hr_pre -= 1
-            if hr_pre < 0: hr_pre = 23
-        if (hr_post < 24 and hr_post_mp < hr_post) or (hr_post == 0 and hr_post_mp > 23):
-            if not hr_dawn < hr_post < hr_dusk:   # not when sun is up
-                tup_post.append((hr_post,idx))
-            hr_post -= 1
-            if hr_post < 0: hr_post = 23
-
-        idx += 1
-
-    for hr, idx in tup_pre:
-        vis_preMP[hr].append(idx)
-    for hr, idx in tup_post:
-        vis_postMP[hr].append(idx)
-
-    return vis_preMP, vis_postMP
-
-def hr_norm(hr):
-    if 0 <= hr < 24: return hr
-    return math.fmod(hr + 24.0, 24.0)
 
 # <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> 
 # <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> 
