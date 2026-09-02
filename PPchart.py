@@ -22,7 +22,7 @@
 import os
 import sys
 import time
-import datetime
+from datetime import date, datetime, timezone
 from pathlib import Path    # works on different operating systems :-)
 import difflib
 
@@ -179,7 +179,7 @@ if __name__ == '__main__':      # execute if this module explicitely run
     if SkyfieldVersion("1.55") < 0:
         # Skyfield >=1.47 is required for almanac.find_transits in MerPass in pp_skyfield.py
         print("Skyfield version 1.55 or higher is required...")
-        print("Please upgrade skyfield using:     pip install skyfield==1.47")
+        print("Please upgrade skyfield using:     pip install skyfield==1.55")
         print(" or to get the latest version:     pip install skyfield --upgrade")
         sys.exit(0)
 
@@ -427,10 +427,10 @@ if __name__ == '__main__':      # execute if this module explicitely run
 
     if compareVersion(py_ver,"3.11") >= 0:
         # Python >= 3.13 now requires timezone-aware datetimes
-        d = datetime.datetime.now(datetime.timezone.utc).date()   # 'datetime.UTC' only added in version 3.11
+        d = datetime.now(timezone.utc).date()   # 'datetime.UTC' only added in version 3.11
     else:
-        d = datetime.datetime.utcnow().date()   # deprecated since Python 3.12
-    first_day = datetime.date(d.year, d.month, d.day)
+        d = datetime.utcnow().date()   # deprecated since Python 3.12
+    first_day = date(d.year, d.month, d.day)
     yy = d.year         # NOT ... yy = "%s" % d.year
 
     if config.pgsz not in set(['A4', 'Letter']):
