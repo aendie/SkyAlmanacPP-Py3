@@ -2,6 +2,8 @@
 
 SkyAlmanacPP-Py3 is a Python 3 program to create the Planetary Phenomena data and charts that accompanies a Nautical Almanac. SkyAlmanacPP-Py3 is a complimenary program to [Skyalmanac-Py3](https://github.com/aendie/SkyAlmanac-Py3).
 
+Please note that there is also a [PyPI version](https://pypi.org/project/skyalmanacPP/) available - the Python Package Index (PyPI) version is recommended for general users due to ease of installation and upgrading.
+
 **Brief History**
 
 SkyAlmanacPP-Py3 began development in January 2023 and has since undergone many updates. I publish only well tested code... the Planetary Visibility Charts, although the charts were correct, required a complete re-write in 2026 that now includes an intermediate language to describe paths that form a perimeter to be shaded, thus providing a level of abstraction from the detailed path descriptions in the "TikZ" language.
